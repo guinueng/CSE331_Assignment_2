@@ -1,10 +1,16 @@
-SANFLAGS = -fsanitize=address
+#SANFLAGS = -fsanitize=address
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = Christofides_heuristic Held-Karp_algorithm
+TARGETS = Christofides_heuristic auto_eval #Held-Karp_algorithm
 
 all: $(TARGETS)
+
+auto_eval: auto_eval.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+auto_eval.o: auto_eval.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Christofides_heuristic: Christofides_heuristic.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)

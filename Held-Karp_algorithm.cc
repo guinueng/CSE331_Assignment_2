@@ -9,8 +9,7 @@
 
 #define INF FLT_MAX
 
-void print(const auto comment, const auto& container)
-{
+void print(const auto comment, const auto& container){ // For debuging purpose.
     auto size = std::size(container);
     std::cout << comment << "{ ";
     for (const auto& element : container)
@@ -18,7 +17,7 @@ void print(const auto comment, const auto& container)
     std::cout << "}\n";
 }
 
-float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second){
+float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second){ // Calculate euclidean dist between two vertex.
     float x_dif = abs(first.first - second.first);
     float y_dif = abs(first.second - second.second);
     // printf("calc: %f\n", sqrt(x_dif * x_dif + y_dif * y_dif));
@@ -27,7 +26,7 @@ float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second
 
 int main(int argc, char* argv[]){
     if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <dataset> <opt>\n";
+        std::cerr << "Usage: " << argv[0] << " <dataset> <rst>\n";
         return EXIT_FAILURE;
     }
 
@@ -75,10 +74,10 @@ int main(int argc, char* argv[]){
     std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
 
     // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
-    for(size_t i = 0; i < n; i++){
+    for(size_t i = 0; i < (size_t)n; i++){
         adj_matrix[i][i] = 0;
 
-        for(size_t j = i + 1; j < n; j++){
+        for(size_t j = i + 1; j < (size_t)n; j++){
             float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
             adj_matrix[i][j] = dist;
             adj_matrix[j][i] = dist;
@@ -97,7 +96,18 @@ int main(int argc, char* argv[]){
     // dp[subset][last] = minimum cost to reach 'last' having visited 'subset'
     // Representing visited subset as bitmask.
     // Found that Held-Karp algorithm is needed to memorize dp sequences.
-    std::vector<std::vector<float>> dp(1 << n, std::vector<float>(n, INF));
+    // std::vector<std::vector<float>> dp(1 << n, std::vector<float>(n, INF));
+    // Vector is quite usefull, but too slow.
+    // float dp[size][n]; <- stack size is so small that n = 25, stack overflow happens.
+    float** dp = new float* [1 << n];
+    // Thus need to use heap, thus used new and delete.
+    for(int i = 0; i < (1 << n); ++i){
+        dp[i] = new float[n];
+        for(int j = 0; j < n; ++j){
+            dp[i][j] = FLT_MAX;
+        }
+    }
+
     dp[1 << 0][0] = 0; // Make starting city(city 1)'s cumulative dist = 0;
 
     for(int subset = 0; subset < (1 << n); subset++){
@@ -129,9 +139,9 @@ int main(int argc, char* argv[]){
     float min_dist = INF;
     int ALL_VISITED = (1 << n) - 1;
 
-    for (int k = 1; k < n; ++k) {
+    for(int k = 1; k < n; k++){
         float cost = dp[ALL_VISITED][k] + adj_matrix[k][0];
-        if (cost < min_dist) {
+        if(cost < min_dist){
             min_dist = cost;
             last = k;
         }
@@ -143,12 +153,12 @@ int main(int argc, char* argv[]){
     int curr = last;
     tour.push_back(1); // End city
 
-    for (int i = n - 1; i >= 1; --i) {
+    for(int i = n - 1; i >= 1; i--){
         tour.push_back(curr + 1);
         // Since array range is [0, n) but city's number range is [1, n], need to add 1.
         int prev_city = -1;
-        for (int k = 0; k < n; ++k) {
-            if (k != curr && (subset & (1 << k))) {
+        for(int k = 0; k < n; k++){
+            if(k != curr && (subset & (1 << k))){
                 if (dp[subset][curr] == dp[subset ^ (1 << curr)][k] + adj_matrix[k][curr]) {
                     prev_city = k;
                     break;
@@ -161,14 +171,13 @@ int main(int argc, char* argv[]){
 
     tour.push_back(1); // Start city.
 
-    std::cout << "min dist: " << min_dist << "\n";
+    std::cout << "min dist: " << min_dist << "\n\n";
 
-    std::cout << "\n";
     for(auto i = tour.rbegin(); i != tour.rend(); i++){
         // Since tour is stored as backtrace way, need to print reverse way.
-        std::cout << *i << " ";
+        // Save city sequence in each line.
+        std::cout << *i << "\n";
     }
-    std::cout << "\n";
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -178,6 +187,12 @@ int main(int argc, char* argv[]){
     std::cout << "Execution time: " << duration << "(ms)\n";
     std::cout << "adj matrix time: " << adj_matrix_duration << "(ms)\n";
     std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
+
+    for(int i = 0; i < (1 << n); i++){
+        delete[] (dp[i]);
+    }
+
+    delete[] (dp);
 
     return 0;
 }
