@@ -2,7 +2,6 @@
 #include <fstream>
 #include <cstdlib> // for EXIT_FAILURE
 #include <vector>
-#include <cstring>
 #include <sstream>
 #include <cmath>
 
@@ -18,7 +17,7 @@ int main(int argc, char* argv[]){
         return EXIT_FAILURE;
     }
 
-    std::ifstream file(argv[1]);
+    std::ifstream file(argv[1], std::ios::in);
     if(!file.is_open()){
         std::cerr<< "Unable to open file.\n" << std::endl;
         return EXIT_FAILURE;
@@ -29,6 +28,7 @@ int main(int argc, char* argv[]){
     std::string line;
     while(std::getline(file, line)){ // Print information in first part of file.
         std::cout << line << std::endl;
+
         if(line.compare(0, 18, "NODE_COORD_SECTION", 18) == 0){
             break;
         }
@@ -43,7 +43,6 @@ int main(int argc, char* argv[]){
         std::istringstream iss(line);
         iss >> city >> x >> y;
 
-        // std::cout << "city: " << city << " x: " << x << " y: " << y << std::endl;
         vertex.emplace_back(city, std::make_pair(x, y));
     }
 
@@ -51,9 +50,9 @@ int main(int argc, char* argv[]){
     //     std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
     // }
 
-    // std::cout << vertex.size() << std::endl;
-    int n = vertex.size();
+    int n = vertex.size(); // Check total input.
     float adj_matrix[n][n];
+    // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
     for(size_t i = 0; i < n; i++){
         adj_matrix[i][i] = 0;
 
@@ -63,10 +62,6 @@ int main(int argc, char* argv[]){
             adj_matrix[j][i] = dist;
         }
     }
-
-    // for(size_t i = 0; i < n; i++){
-    //     std::cout << adj_matrix[1][i] << " ";
-    // }
 
     return 0;
 }

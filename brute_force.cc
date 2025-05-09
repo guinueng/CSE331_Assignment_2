@@ -1,13 +1,9 @@
 #include <iostream>
-#include <fstream>  // Used for opening and reading file.
-#include <cstdlib>  // Used for EXIT_FAILURE
-#include <vector>   // Used for storing element.
-#include <sstream>  // Used for dismissing " " in readed line.
-#include <cmath>    // Used for sqrt.
-#include <cfloat>   // Used for FLT_MAx
-#include <chrono>   // Used for calculating execution time.
-
-#define INF FLT_MAX
+#include <fstream>
+#include <cstdlib> // for EXIT_FAILURE
+#include <vector>
+#include <sstream>
+#include <cmath>
 
 void print(const auto comment, const auto& container)
 {
@@ -142,79 +138,48 @@ int main(int argc, char* argv[]){
         std::cout << "\n";
     }
 
-    // dp[subset][last] = minimum cost to reach 'last' having visited 'subset'
-    // Representing visited subset as bitmask.
-    // Found that Held-Karp algorithm is needed to memorize dp sequences.
-    std::vector<std::vector<float>> dp(1 << n, std::vector<float>(n, INF));
-    dp[1 << 0][0] = 0; // Make starting city(city 1)'s cumulative dist = 0;
-
-    for(int subset = 0; subset < (1 << n); subset++){
-        // Trying all subset case by gradually increasing subset.
-        // 1 -> 2(in binary 10, which include city 2) -> 3(in binary 11, which include city 1, 2) and so on.
-        for(int last = 0; last < n; ++last){
-            if(subset & (1 << last)){
-                // Trying S-l case.
-                // Checking last visit city(will visit in this context) is included in subset.
-                // If last is not included in subset, by and operation, if statement will work as false case.
-                for(int prev = 0; prev < n; prev++){
-                    if(prev != last && (subset & (1 << prev))){
-                        // Calc cumulative distance based on prev city which will work m, and last will work as l
-                        // in given dpsequencing paper.
-                        // prev city should also contained in subset.
-                        dp[subset][last] = std::min(
-                            dp[subset][last],
-                            dp[subset ^ (1 << last)][prev] + adj_matrix[prev][last]
-                            // min dist to city 1 to prev + dist from prev to last city
-                        );
-                    }
-                }
-            }
-        }
-    }    
-
-    // After filling dp[subset][last] array, find last city with minimal cost
-    int last = -1;
-    float min_dist = INF;
-    int ALL_VISITED = (1 << n) - 1;
-
-    for (int k = 1; k < n; ++k) {
-        float cost = dp[ALL_VISITED][k] + adj_matrix[k][0];
-        if (cost < min_dist) {
-            min_dist = cost;
-            last = k;
-        }
-    }
-
-    // Then, backtrack dp array to find the tour
+    float min_dist, tmp_dist;
     std::vector<int> tour;
-    int subset = ALL_VISITED;
-    int curr = last;
-    tour.push_back(1); // End city
-
-    for (int i = n - 1; i >= 1; --i) {
-        tour.push_back(curr + 1);
-        // Since array range is [0, n) but city's number range is [1, n], need to add 1.
-        int prev_city = -1;
-        for (int k = 0; k < n; ++k) {
-            if (k != curr && (subset & (1 << k))) {
-                if (dp[subset][curr] == dp[subset ^ (1 << curr)][k] + adj_matrix[k][curr]) {
-                    prev_city = k;
-                    break;
-                }
+    int tmp_vertex = vertex_list[1];
+    int min_vertex, tmp;
+    vertex_list.erase(vertex_list.begin(), vertex_list.begin() + 2);
+    print("original vertex list", vertex_list);
+    tour.push_back(1);
+    
+    for(size_t i = 0; i <= (size_t)vertex_list.size(); i++){
+        print("vertex_list", vertex_list);
+        std::vector<int> tmp_tour;
+        tmp_dist = TSP(vertex_list, tmp_tour, adj_matrix, tmp_vertex) + adj_matrix[0][tmp_vertex - 1];
+        if(i == 0){
+            min_dist = tmp_dist;
+            min_vertex = tmp_vertex;
+            tour = tmp_tour;
+            std::cout << "first dist: " << min_dist << "\n";
+        }
+        else{
+            if(min_dist > tmp_dist){
+                min_dist = tmp_dist;
+                min_vertex = tmp_vertex;
+                tour = tmp_tour;
+                std::cout << "updated: "<< min_dist << "\n";
             }
         }
-        subset ^= (1 << curr);
-        curr = prev_city;
+
+        if(i != vertex_list.size()){
+            tmp = vertex_list[i];
+            vertex_list[i] = tmp_vertex;
+            tmp_vertex = tmp;
+        }
     }
 
-    tour.push_back(1); // Start city.
+    tour.push_back(min_vertex);
+    tour.push_back(1);
 
-    std::cout << "min dist: " << min_dist << "\n";
+    printf("min dist: %.4f", min_dist);
 
     std::cout << "\n";
-    for(auto i = tour.rbegin(); i != tour.rend(); i++){
-        // Since tour is stored as backtrace way, need to print reverse way.
-        std::cout << *i << " ";
+    for(auto i : tour){
+        std::cout << i << " ";
     }
     std::cout << "\n";
 
