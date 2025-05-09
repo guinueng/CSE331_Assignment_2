@@ -25,65 +25,13 @@ float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second
     return sqrt(x_dif * x_dif + y_dif * y_dif);
 }
 
-float TSP(std::vector<int> &vertex, std::vector<int> &tour, std::vector<std::vector<float>> adj_matrix, int target){
-    if(vertex.size() == 1){
-        tour.push_back(1);
-        tour.push_back(vertex[0]);
-        // print("Final: ", tour);
-        // printf("min: %f\n", adj_matrix[0][(vertex[0] - 1)]);
-        return adj_matrix[0][(vertex[0] - 1)] + adj_matrix[vertex[0] - 1][target - 1];
-        // Base case. Return a_1l. Since vertex saves city in range [1, n], need to distract 1.
-    }
-
-    // Recursive case. Need to find minimum tour.
-    float min;
-    float tmp_dist;
-
-    int tmp, min_vertex;
-    std::vector<int> tmp_vertex = vertex;
-    int del_pos = tmp_vertex[0];
-    tmp_vertex.erase(tmp_vertex.begin());
-
-    for(size_t i = 0; i <= tmp_vertex.size(); i++){
-        std::vector<int> tmp_tour;
-        print("tmp: ", tmp_vertex);
-        // printf("selected: %d\n", del_pos);
-        // printf("target: %d, del_pos: %d\n", target, del_pos);
-        tmp_dist = TSP(tmp_vertex, tmp_tour, adj_matrix, del_pos) + adj_matrix[target - 1][del_pos - 1];
-        // printf("a_ml: %f\n", adj_matrix[target - 1][del_pos - 1]);
-        if(i == 0){
-            min = tmp_dist;
-            tour = tmp_tour;
-            min_vertex = del_pos;
-            // print("1st", tour);
-        }
-        else{
-            if(min > tmp_dist){
-                min = tmp_dist;
-                tour = tmp_tour;
-                min_vertex = del_pos;
-                // print("up", tour);
-            }
-        }
-
-        if(i != tmp_vertex.size()){
-            tmp = tmp_vertex[i];
-            tmp_vertex[i] = del_pos;
-            del_pos = tmp;
-        }
-    }
-
-    tour.push_back(min_vertex);
-    print("Final: ", tour);
-    printf("min: %f\n", min);
-    return min;
-}
-
 int main(int argc, char* argv[]){
     if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <dataset> <opt>\n";
         return EXIT_FAILURE;
     }
+
+    auto start = std::chrono::high_resolution_clock::now();
 
     std::ifstream file(argv[1], std::ios::in);
     if(!file.is_open()){
@@ -116,10 +64,12 @@ int main(int argc, char* argv[]){
         vertex_list.emplace_back(city);
     }
 
-    for(const auto i: vertex){ // Print vertex info.
-        std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
-    }
-    std::cout << "\n";
+    // for(const auto i: vertex){ // Print vertex info.
+    //     std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
+    // }
+    // std::cout << "\n";
+
+    auto file_open_end = std::chrono::high_resolution_clock::now();
 
     int n = vertex.size(); // Check total input.
     std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
@@ -135,12 +85,14 @@ int main(int argc, char* argv[]){
         }
     }
 
-    for(const auto i: adj_matrix){ // Print adj_matrix info.
-        for(const auto j: i){
-            std::cout << j << " ";
-        }
-        std::cout << "\n";
-    }
+    auto adj_matrix_end = std::chrono::high_resolution_clock::now();
+
+    // for(const auto i: adj_matrix){ // Print adj_matrix info.
+    //     for(const auto j: i){
+    //         std::cout << j << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
 
     // dp[subset][last] = minimum cost to reach 'last' having visited 'subset'
     // Representing visited subset as bitmask.
@@ -217,6 +169,15 @@ int main(int argc, char* argv[]){
         std::cout << *i << " ";
     }
     std::cout << "\n";
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto adj_matrix_duration = std::chrono::duration_cast<std::chrono::milliseconds>(adj_matrix_end - file_open_end).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - adj_matrix_end).count();
+    std::cout << "Execution time: " << duration << "(ms)\n";
+    std::cout << "adj matrix time: " << adj_matrix_duration << "(ms)\n";
+    std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     return 0;
 }
