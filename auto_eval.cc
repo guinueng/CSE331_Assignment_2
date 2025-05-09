@@ -29,7 +29,9 @@ int main() {
  
     std::vector<std::string> args = {
         "a5.tsp",
-        // "a280.tsp",
+        "a25.tsp",
+        "a100.tsp",
+        "a280.tsp",
         // "xql662.tsp",
         // "kz9976.tsp",
         // "mona-lisa100K.tsp",

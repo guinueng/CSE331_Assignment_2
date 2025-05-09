@@ -2,7 +2,7 @@
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = Christofides_heuristic auto_eval #Held-Karp_algorithm
+TARGETS = Christofides_heuristic auto_eval Held-Karp_algorithm
 
 all: $(TARGETS)
 
