@@ -1,122 +1,113 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib> // for EXIT_FAILURE
+#include <cstdlib>
 #include <vector>
 #include <sstream>
 #include <cmath>
-#include <cfloat>   // Used for FLT_MAX
-#include <climits>  // Used for INT_MAX
-#include <chrono>   // Used for calculating execution time.
+#include <cfloat>
+#include <iomanip>
+#include <limits> // Required for numeric_limits
 
-#define INF FLT_MAX
+#define INF DBL_MAX
 
-float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second){
-    float x_dif = abs(first.first - second.first);
-    float y_dif = abs(first.second - second.second);
-    return sqrt(x_dif * x_dif + y_dif * y_dif);
+// Use long double for distance calculation to improve precision.
+long double calc_2d_dist(long double first_x, long double first_y, long double second_x, long double second_y) {
+    long double x_diff = std::abs(first_x - second_x);
+    long double y_diff = std::abs(first_y - second_y);
+    return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
-float prim_jarnik_mst(std::vector<std::vector<float>> &adj_matrix, std::vector<std::pair<int, float>> &city, int size){
-    city[0].second = 0;
-    for(int i = 1; i < 5; i++){
-        city[i].second = INF;
-    }
-    return 0;
-}
-
-int main(int argc, char* argv[]){
-    if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <dataset> <opt>\n";
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
     }
 
-    std::ifstream file(argv[1], std::ios::in);
-    if(!file.is_open()){
-        std::cerr<< "Unable to open file.\n" << std::endl;
+    std::ifstream file(argv[1]);
+    if (!file.is_open()) {
+        std::cerr << "Unable to open file: " << argv[1] << "\n";
         return EXIT_FAILURE;
     }
 
-    std::vector<std::pair<int, std::pair<float, float>>> vertex;
-
+    std::vector<std::pair<int, std::pair<long double, long double>>> vertices; // Use long double
     std::string line;
-    while(std::getline(file, line)){ // Print information in first part of file.
-        std::cout << line << std::endl;
 
-        if(line.compare(0, 18, "NODE_COORD_SECTION", 18) == 0){
+    while (std::getline(file, line)) {
+        std::cout << line << std::endl;
+        if (line.rfind("NODE_COORD_SECTION", 0) == 0) {
             break;
         }
     }
 
-    int city;
-    float x, y;
-    while(std::getline(file, line)){ // Extract coord info in tsp file.
-        if(line.compare("EOF") == 0)
+    while (std::getline(file, line)) {
+        if (line.find("EOF") != std::string::npos) {
             break;
-    
+        }
         std::istringstream iss(line);
-        iss >> city >> x >> y;
-
-        vertex.emplace_back(city, std::make_pair(x, y));
+        int city;
+        long double x, y; // Use long double
+        if (iss >> city >> x >> y) {
+            vertices.emplace_back(city, std::make_pair(x, y));
+        } else {
+            std::cerr << "Skipping invalid line: " << line << std::endl;
+        }
     }
 
-    // for(const auto i: vertex){ // Print vertex info.
-    //     std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
-    // }
+    size_t n = vertices.size();
+    if (n == 0) {
+        std::cerr << "No vertices found in the file.\n";
+        return EXIT_FAILURE;
+    }
+    std::vector<std::vector<long double>> adj_matrix(n, std::vector<long double>(n)); // Use long double
 
-    size_t n = vertex.size(); // Check total input.
-    std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
-
-    // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
-    for(size_t i = 0; i < n; i++){
-        adj_matrix[i][i] = 0;
-
-        for(size_t j = i + 1; j < n; j++){
-            float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t j = i + 1; j < n; ++j) {
+            long double dist = calc_2d_dist(vertices[i].second.first, vertices[i].second.second, vertices[j].second.first, vertices[j].second.second);
             adj_matrix[i][j] = dist;
             adj_matrix[j][i] = dist;
         }
+        adj_matrix[i][i] = 0.0;
     }
 
-    // Find MST
-    std::vector<std::vector<float>> mst(n, std::vector<float>(n, 0.0000f));
-    std::vector<bool> inside(n, false);
-    std::vector<int> key(n, INT_MAX);
-    std::vector<int> parent(n, -1);
-    
-    mst = adj_matrix;
-    inside[0] = true;
+    std::vector<int> parent(n);
+    std::vector<long double> key(n, INF); // Use long double
+    std::vector<bool> in_mst(n, false);
+
     key[0] = 0;
-    int idx = 0;
-    int min_idx;
-    // std::pair<int, float> min = {-1, INT_MAX};
+    parent[0] = -1;
 
-    for(size_t i = 0; i < n; i++){
-        min_idx = -1;
-        for(size_t j = 0; j < n; j++){
-            if(i == 0){
-                key[j] = adj_matrix[idx][j];
-                if(j == 0 || adj_matrix[idx][j] < adj_matrix[idx][min_idx]){
-                    min_idx = j;
-                }
-            }
-            else{
-                if(j == idx){
-                    continue;
-                }
-
-                if()
-
-                if(j == 0 || adj_matrix[idx][j] < adj_matrix[idx][min_idx]){
-                    min_idx = j;
-                }
-
+    for (size_t count = 0; count < n - 1; ++count) {
+        int u = -1;
+        long double min_key = INF; // Use long double
+        for (size_t v = 0; v < n; ++v) {
+            if (!in_mst[v] && key[v] < min_key) {
+                min_key = key[v];
+                u = v;
             }
         }
 
-        inside[min_idx] = true;
-        idx = min_idx;
+        if (u == -1) {
+            std::cerr << "Error: MST construction failed. Graph is not connected.\n";
+            return EXIT_FAILURE;
+        }
+        in_mst[u] = true;
+
+        for (size_t v = 0; v < n; ++v) {
+            if (!in_mst[v] && adj_matrix[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = adj_matrix[u][v];
+            }
+        }
     }
-    
+
+    long double total_weight = 0; // Use long double
+    std::cout << "Edge \tWeight\n";
+    std::cout << std::fixed << std::setprecision(15); // Increase precision
+    for (size_t i = 1; i < n; ++i) {
+        std::cout << parent[i] + 1 << " - " << i + 1 << "\t" << adj_matrix[i][parent[i]] << std::endl;
+        total_weight += adj_matrix[i][parent[i]];
+    }
+    std::cout << "Total MST weight: " << total_weight << std::endl;
 
     return 0;
 }

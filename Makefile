@@ -2,7 +2,7 @@
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = Christofides_heuristic auto_eval Held-Karp_algorithm
+TARGETS = Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
 
 all: $(TARGETS)
 
@@ -10,6 +10,12 @@ auto_eval: auto_eval.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 auto_eval.o: auto_eval.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+chris_auto_eval: chris_auto_eval.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+chris_auto_eval.o: chris_auto_eval.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Christofides_heuristic: Christofides_heuristic.o
