@@ -129,10 +129,20 @@ int main(int argc, char* argv[]) {
     }
 
     int odd_vertex_qty = odd_vertex.size();
-    std::vector<int> matched(odd_vertex_qty, 0);
+    std::vector<int> matched(odd_vertex_qty, -1);
+    std::vector<int> tree(odd_vertex_qty, -1);
 
-    while(unmatched(matched)){
-        ;
+    while(unmatched(matched)){  // https://www.sfu.ca/~goddyn/Courseware/edmonds.pdf
+        int root_idx = -1;
+        for(size_t i = 0; i < matched.size(); i++){
+            if(matched[i] == -1){
+                root_idx = i;
+                break;
+            }
+        }
+
+
+
     }
 
 
