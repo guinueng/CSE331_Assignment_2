@@ -17,16 +17,6 @@ long double calc_2d_dist(long double first_x, long double first_y, long double s
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
-bool unmatched(std::vector<int>& matching_rst){
-    for(auto i : matching_rst){
-        if(i != 1){
-            return true;
-        }
-    }
-
-    return false;
-}
-
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <dataset>\n";
@@ -128,12 +118,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    int odd_vertex_qty = odd_vertex.size();
-    std::vector<int> matched(odd_vertex_qty, 0);
-
-    while(unmatched(matched)){
-        ;
-    }
+    
 
 
     return 0;
