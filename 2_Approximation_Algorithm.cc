@@ -73,16 +73,6 @@ int main(int argc, char* argv[]) {
         std::cerr << "No vertices found in the file.\n";
         return EXIT_FAILURE;
     }
-    // std::vector<std::vector<long double>> adj_matrix(n, std::vector<long double>(n)); // Use long double
-
-    // for (size_t i = 0; i < n; ++i) {
-    //     for (size_t j = i + 1; j < n; ++j) {
-    //         long double dist = calc_2d_dist(vertices[i].second.first, vertices[i].second.second, vertices[j].second.first, vertices[j].second.second);
-    //         adj_matrix[i][j] = dist;
-    //         adj_matrix[j][i] = dist;
-    //     }
-    //     adj_matrix[i][i] = 0.0;
-    // }
 
     std::vector<int> parent(n);
     std::vector<std::vector<std::pair<int, long double>>> child(n);

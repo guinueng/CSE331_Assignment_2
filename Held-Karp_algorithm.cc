@@ -25,8 +25,8 @@ float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second
 }
 
 int main(int argc, char* argv[]){
-    if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <dataset> <rst>\n";
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
     }
 
@@ -63,35 +63,24 @@ int main(int argc, char* argv[]){
         vertex_list.emplace_back(city);
     }
 
-    // for(const auto i: vertex){ // Print vertex info.
-    //     std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
-    // }
-    // std::cout << "\n";
-
     auto file_open_end = std::chrono::high_resolution_clock::now();
 
     int n = vertex.size(); // Check total input.
-    std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
+    // std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
 
     // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
-    for(size_t i = 0; i < (size_t)n; i++){
-        adj_matrix[i][i] = 0;
+    // But due to too many usage of mem space, I've changed calculate distance when it needs.
+    // for(size_t i = 0; i < (size_t)n; i++){
+    //     adj_matrix[i][i] = 0;
 
-        for(size_t j = i + 1; j < (size_t)n; j++){
-            float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
-            adj_matrix[i][j] = dist;
-            adj_matrix[j][i] = dist;
-        }
-    }
+    //     for(size_t j = i + 1; j < (size_t)n; j++){
+    //         float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
+    //         adj_matrix[i][j] = dist;
+    //         adj_matrix[j][i] = dist;
+    //     }
+    // }
 
     auto adj_matrix_end = std::chrono::high_resolution_clock::now();
-
-    // for(const auto i: adj_matrix){ // Print adj_matrix info.
-    //     for(const auto j: i){
-    //         std::cout << j << " ";
-    //     }
-    //     std::cout << "\n";
-    // }
 
     // dp[subset][last] = minimum cost to reach 'last' having visited 'subset'
     // Representing visited subset as bitmask.
@@ -125,14 +114,14 @@ int main(int argc, char* argv[]){
                         // prev city should also contained in subset.
                         dp[subset][last] = std::min(
                             dp[subset][last],
-                            dp[subset ^ (1 << last)][prev] + adj_matrix[prev][last]
+                            dp[subset ^ (1 << last)][prev] + calc_2d_dist(vertex[prev].second, vertex[last].second)
                             // min dist to city 1 to prev + dist from prev to last city
                         );
                     }
                 }
             }
         }
-    }    
+    }
 
     // After filling dp[subset][last] array, find last city with minimal cost
     int last = -1;
@@ -140,7 +129,7 @@ int main(int argc, char* argv[]){
     int ALL_VISITED = (1 << n) - 1;
 
     for(int k = 1; k < n; k++){
-        float cost = dp[ALL_VISITED][k] + adj_matrix[k][0];
+        float cost = dp[ALL_VISITED][k] + calc_2d_dist(vertex[k].second, vertex[0].second);
         if(cost < min_dist){
             min_dist = cost;
             last = k;
@@ -159,7 +148,7 @@ int main(int argc, char* argv[]){
         int prev_city = -1;
         for(int k = 0; k < n; k++){
             if(k != curr && (subset & (1 << k))){
-                if (dp[subset][curr] == dp[subset ^ (1 << curr)][k] + adj_matrix[k][curr]) {
+                if (dp[subset][curr] == dp[subset ^ (1 << curr)][k] + calc_2d_dist(vertex[k].second, vertex[curr].second)) {
                     prev_city = k;
                     break;
                 }
@@ -182,10 +171,10 @@ int main(int argc, char* argv[]){
     auto end = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    auto adj_matrix_duration = std::chrono::duration_cast<std::chrono::milliseconds>(adj_matrix_end - file_open_end).count();
+    // auto adj_matrix_duration = std::chrono::duration_cast<std::chrono::milliseconds>(adj_matrix_end - file_open_end).count();
     auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - adj_matrix_end).count();
     std::cout << "Execution time: " << duration << "(ms)\n";
-    std::cout << "adj matrix time: " << adj_matrix_duration << "(ms)\n";
+    // std::cout << "adj matrix time: " << adj_matrix_duration << "(ms)\n";
     std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     for(int i = 0; i < (1 << n); i++){
