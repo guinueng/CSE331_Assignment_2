@@ -135,18 +135,39 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    std::vector<std::vector<std::pair<int, long double>>> child_ = child;
+
+    printf("2\n");
+
     std::vector<int> mst_hc(n); // 2. Find HC in MST.
     int idx = 0;
     long double aprx_weight = 0;
     for(size_t i = 0; i < n; i++){
-        if(child[idx].empty()){
+        if(child_[idx].empty()){
             idx = parent[idx];
             continue;
         }
-        int tmp = child[idx].front().first;
-        aprx_weight += child[idx].front().second;
+        int tmp = child_[idx].front().first;
+        child_[idx].erase(child_[idx].begin());
+        if(i != n - 1){
+            mst_hc[i + 1] = tmp;
+        }
+
         idx = tmp;
     }
+
+    printf("7\n");
+
+    for(size_t i = 0; i < n - 1; i++){
+        printf("%d\t", i);
+        // for(auto j: child[mst_hc[i]]){
+        //     if(j.first == mst_hc[i + 1]){
+        //         aprx_weight += j.second;
+        //     }
+        // }
+        aprx_weight += adj_matrix[mst_hc[i]][mst_hc[i + 1]];
+    }
+    aprx_weight += adj_matrix[mst_hc[n - 1]][mst_hc[0]];
 
     std::cout << "aprx dist: " << aprx_weight << std::endl;
 
