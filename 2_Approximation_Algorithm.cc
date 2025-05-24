@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cfloat>
 #include <iomanip>
+#include <algorithm>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -15,6 +16,10 @@ long double calc_2d_dist(long double first_x, long double first_y, long double s
     long double x_diff = std::abs(first_x - second_x);
     long double y_diff = std::abs(first_y - second_y);
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
+}
+
+bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
+    return a.second < b.second;
 }
 
 int main(int argc, char* argv[]) {
@@ -70,6 +75,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::vector<int> parent(n);
+    std::vector<std::vector<std::pair<int, long double>>> child(n);
     std::vector<long double> key(n, INF); // Use long double
     std::vector<bool> in_mst(n, false);
     std::vector<int> conn_stat(n, 0);
@@ -77,10 +83,10 @@ int main(int argc, char* argv[]) {
     key[0] = 0;
     parent[0] = -1;
 
-    for (size_t count = 0; count < n - 1; ++count) { // 1. Find MST
+    for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
         int u = -1;
         long double min_key = INF; // Use long double
-        for (size_t v = 0; v < n; ++v) {
+        for (size_t v = 0; v < n; v++) {
             if (!in_mst[v] && key[v] < min_key) {
                 min_key = key[v];
                 u = v;
@@ -93,7 +99,7 @@ int main(int argc, char* argv[]) {
         }
         in_mst[u] = true;
 
-        for (size_t v = 0; v < n; ++v) {
+        for (size_t v = 0; v < n; v++) {
             if (!in_mst[v] && adj_matrix[u][v] < key[v]) {
                 parent[v] = u;
                 key[v] = adj_matrix[u][v];
@@ -111,15 +117,38 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "Total MST weight: " << total_weight << std::endl;
 
-    std::vector<int> odd_vertex; // 2. Find odd vertex in MST.
+    long double w = 0;
     for(size_t i = 0; i < n; i++){
-        if(conn_stat[i] % 2 == 1){
-            odd_vertex.push_back(i);
+        w += key[i];
+    }
+    std::cout << "Total MST weight in key: " << w << std::endl;
+
+    for(size_t i = 1; i < n; i++){
+        child[parent[i]].emplace_back(i, key[i]);
+    }
+    printf("1\n");
+
+    for(size_t i = 0; i < n; i++){
+        std::sort(child[i].begin(), child[i].end(), cmp_weight);
+        for(auto j: child[i]){
+            std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
         }
     }
 
-    
+    std::vector<int> mst_hc(n); // 2. Find HC in MST.
+    int idx = 0;
+    long double aprx_weight = 0;
+    for(size_t i = 0; i < n; i++){
+        if(child[idx].empty()){
+            idx = parent[idx];
+            continue;
+        }
+        int tmp = child[idx].front().first;
+        aprx_weight += child[idx].front().second;
+        idx = tmp;
+    }
 
+    std::cout << "aprx dist: " << aprx_weight << std::endl;
 
     return 0;
 }

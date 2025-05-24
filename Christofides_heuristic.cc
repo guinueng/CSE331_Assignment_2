@@ -131,6 +131,8 @@ int main(int argc, char* argv[]) {
     int odd_vertex_qty = odd_vertex.size();
     std::vector<int> matched(odd_vertex_qty, -1);
     std::vector<int> tree(odd_vertex_qty, -1);
+    std::vector<double> disc_dual(odd_vertex_qty, 0.0);
+    std::vector<std::pair<int, double>> moat_dual(odd_vertex_qty);
 
     while(unmatched(matched)){  // https://www.sfu.ca/~goddyn/Courseware/edmonds.pdf
         int root_idx = -1;
