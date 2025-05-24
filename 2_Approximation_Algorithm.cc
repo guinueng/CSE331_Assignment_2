@@ -32,17 +32,6 @@ void find_hc(std::vector<std::vector<std::pair<int, long double>>>& child, std::
     }
 }
 
-// while(cnt != n){
-    //     if(visited[idx]){
-    //         idx = parent[idx];
-    //         continue;
-    //     }
-    //     visited[idx] = true;
-    //     idx = child[idx].front().first;
-    //     mst_hc.push_back(idx);
-    //     cnt++;
-    // }
-
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <dataset>\n";
@@ -84,16 +73,16 @@ int main(int argc, char* argv[]) {
         std::cerr << "No vertices found in the file.\n";
         return EXIT_FAILURE;
     }
-    std::vector<std::vector<long double>> adj_matrix(n, std::vector<long double>(n)); // Use long double
+    // std::vector<std::vector<long double>> adj_matrix(n, std::vector<long double>(n)); // Use long double
 
-    for (size_t i = 0; i < n; ++i) {
-        for (size_t j = i + 1; j < n; ++j) {
-            long double dist = calc_2d_dist(vertices[i].second.first, vertices[i].second.second, vertices[j].second.first, vertices[j].second.second);
-            adj_matrix[i][j] = dist;
-            adj_matrix[j][i] = dist;
-        }
-        adj_matrix[i][i] = 0.0;
-    }
+    // for (size_t i = 0; i < n; ++i) {
+    //     for (size_t j = i + 1; j < n; ++j) {
+    //         long double dist = calc_2d_dist(vertices[i].second.first, vertices[i].second.second, vertices[j].second.first, vertices[j].second.second);
+    //         adj_matrix[i][j] = dist;
+    //         adj_matrix[j][i] = dist;
+    //     }
+    //     adj_matrix[i][i] = 0.0;
+    // }
 
     std::vector<int> parent(n);
     std::vector<std::vector<std::pair<int, long double>>> child(n);
@@ -121,9 +110,10 @@ int main(int argc, char* argv[]) {
         in_mst[u] = true;
 
         for (size_t v = 0; v < n; v++) {
-            if (!in_mst[v] && adj_matrix[u][v] < key[v]) {
+            long double dist = calc_2d_dist(vertices[u].second.first, vertices[u].second.second, vertices[v].second.first, vertices[v].second.second);
+            if (!in_mst[v] && dist < key[v]) {
                 parent[v] = u;
-                key[v] = adj_matrix[u][v];
+                key[v] = dist;
             }
         }
     } // Helped by gemini in google.inc(url: https://g.co/gemini/share/1528ec3e4e49)
@@ -131,12 +121,6 @@ int main(int argc, char* argv[]) {
     long double total_weight = 0; // Use long double
     std::cout << "Edge \tWeight\n";
     std::cout << std::fixed << std::setprecision(15); // Increase precision
-    // for (size_t i = 1; i < n; ++i) {
-    //     std::cout << parent[i] + 1 << " - " << i + 1 << "\t" << adj_matrix[i][parent[i]] << std::endl;
-    //     total_weight += adj_matrix[i][parent[i]];
-    //     conn_stat[parent[i]]++;
-    // }
-    // std::cout << "Total MST weight: " << total_weight << std::endl;
 
     long double w = 0;
     for(size_t i = 0; i < n; i++){
@@ -156,41 +140,15 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // std::vector<std::vector<std::pair<int, long double>>> child_ = child;
-
-    printf("2\n");
-
     std::vector<int> mst_hc; // 2. Find HC in MST.
     std::vector<bool> visited (n, false);
-    // int idx = 0;
-    // int cnt = 0;
-    long double aprx_weight = 0;
-    // mst_hc.push_back(0);
-    // while(cnt != n){
-    //     if(visited[idx]){
-    //         idx = parent[idx];
-    //         continue;
-    //     }
-    //     visited[idx] = true;
-    //     idx = child[idx].front().first;
-    //     mst_hc.push_back(idx);
-    //     cnt++;
-    // }
-
     find_hc(child, mst_hc, visited, 0);
 
-    printf("7\n");
-
+    long double aprx_weight = 0;
     for(size_t i = 0; i < n - 1; i++){
-        std::cout << "\t" << i << std::endl;
-        // for(auto j: child[mst_hc[i]]){
-        //     if(j.first == mst_hc[i + 1]){
-        //         aprx_weight += j.second;
-        //     }
-        // }
-        aprx_weight += adj_matrix[mst_hc[i]][mst_hc[i + 1]];
+        aprx_weight += calc_2d_dist(vertices[mst_hc[i]].second.first, vertices[mst_hc[i]].second.second, vertices[mst_hc[i + 1]].second.first, vertices[mst_hc[i + 1]].second.second);
     }
-    aprx_weight += adj_matrix[mst_hc[n - 1]][mst_hc[0]];
+    aprx_weight += calc_2d_dist(vertices[n - 1].second.first, vertices[n - 1].second.second, vertices[0].second.first, vertices[0].second.second);
 
     for(auto i: mst_hc){
         std::cout << i << "\t";
