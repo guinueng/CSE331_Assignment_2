@@ -124,18 +124,16 @@ int main(int argc, char* argv[]) {
     std::vector<std::pair<int, bool>> matched;
     std::vector<std::pair<int, int>> matching;  // Pair of matching.
     std::vector<std::pair<std::pair<int, int>, int>> tight; // <<u, v>, weight>
-    std::vector<std::vector<int>> moats;    // Vertex inside in blossoms.
-    std::vector<std::pair<int, int>> even;  // target idx, what to connected
-    std::vector<std::pair<int, int>> odd;   // target idx, what to connected
+    std::vector<std::pair<int, std::vector<int>>> moats;    // Vertex inside in blossoms.
+    std::vector<std::pair<int, int>> label;  // target idx, unmatched/even/odd(0/1/2) state.
+    std::vector<std::pair<int, std::vector<int>>> tree;  // Tree
     for(size_t i = 0; i < odd_vertex_qty; i++){
         radius.emplace_back(odd_vertex[i],  0);
         matched.emplace_back(odd_vertex[i], false);
+        label.emplace_back(odd_vertex[i], 0);
     }
 
     while(true){
-        // if(radius.size() / 2 == matching.size()){
-        //     break;
-        // }
         int root = 0;
         bool all_matched = true;
         for(size_t i = 0; i < matched.size(); i++){
@@ -149,10 +147,36 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        root
-        while(true){    // 2. Expand/shrink all tree until 3 cases happens.
-            ;
+        std::vector<int> even;
+        std::vector<int> odd;
+
+        int delta;
+
+        for(size_t i = 0; i < radius.size(); i++){
+            for(size_t j = 0; j < label.size(); j++){
+                if(label[j].first == radius[i].first){
+                    if(label[j].second == 1){
+                        radius[i].second += delta;
+                    }
+                    else if(label[j].second == 2){
+                        radius[i].second -= delta;
+                    }
+                }
+            }
         }
+
+        for(size_t i = 0; i < moats.size(); i++){
+            for(size_t j = 0; j < radius.size(); j++){
+                if(moats[j].first == radius[i].first){
+                    if(radius[i].second == 0){
+                        // Break moats.
+                        // Remove tight edges occurd from moats.
+                    }
+                }
+            }
+        }
+
+
 
 
     }
