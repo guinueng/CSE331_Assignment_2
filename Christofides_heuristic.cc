@@ -159,6 +159,26 @@ int main(int argc, char* argv[]) {
             candidates.pop();   // 2) Delete candidates.
             int delta; // = calc_delta(); maybe?
 
+            for(size_t v = 0; v < odd_vertex_qty; v++){
+                if(tree_root[u] == tree_root[v] || matching[u] == v){ // case 1. matched one or locates in same tree.
+                    continue;
+                }
+
+                if(v == root || (matching[v] != -1 && parent[matching[v]] != -1)){ // If found loops.
+                    // Can create blossoms.
+                }
+                else if(parent[v] == -1){ // If no loops.
+                    parent[v] = u;
+                    if(matching[v] == -1){
+
+                    }
+                    else{
+                        candidates.push(matching[v]);
+                        in_que[matching[v]] = true;
+                    }
+                }
+                
+            }
             // for(size_t i = 0; i < radius.size(); i++){
             //     // if(label[i] == 1){
             //     //     radius[i] += delta;
