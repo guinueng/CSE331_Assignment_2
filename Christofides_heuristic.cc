@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <algorithm>
 #include <iomanip>
+#include <queue>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -120,26 +121,31 @@ int main(int argc, char* argv[]) {
     }
 
     int odd_vertex_qty = odd_vertex.size();
-    std::vector<std::pair<int, long double>> radius; // Radius of each vertex/moats. 0+ for vertex(discs), -1- for moats(blossoms).
-    std::vector<std::pair<int, bool>> matched;
-    std::vector<std::pair<int, int>> matching;  // Pair of matching.
-    std::vector<std::pair<std::pair<int, int>, int>> tight; // <<u, v>, weight>
-    std::vector<std::pair<int, std::vector<int>>> moats;    // Vertex inside in blossoms.
-    std::vector<std::pair<int, int>> label;  // target idx, unmatched/even/odd(0/1/2) state.
-    std::vector<std::pair<int, std::vector<int>>> tree;  // Tree
-    for(size_t i = 0; i < odd_vertex_qty; i++){
-        radius.emplace_back(odd_vertex[i],  0);
-        matched.emplace_back(odd_vertex[i], false);
-        label.emplace_back(odd_vertex[i], 0);
-    }
+    
+    std::vector<int> matching;  // Pair of matching.
+    std::vector<std::pair<int, int>> tight; // <<u, v>, weight>
+    std::vector<std::vector<int>> moats;    // Vertex inside in blossoms.
+    std::vector<int> label(odd_vertex_qty, -1);  // target idx, unmatched/even/odd(0/1/2) state.
+    std::vector<int> parent(odd_vertex_qty, -1);
+    std::vector<bool> in_que(odd_vertex_qty, false);
+    std::vector<int> tree_root(odd_vertex_qty, 0);
 
     while(true){
+        std::vector<int> radius(odd_vertex_qty, 0); // Radius of each vertex/moats. 0+ for vertex(discs), -1- for moats(blossoms).
+        for(size_t i = 0; i < odd_vertex_qty; i++){
+            parent[i] = -1;
+            in_que[i] = false;
+            label[i] = 0;
+            tree_root[i] = i;
+        }
+
         int root = 0;
         bool all_matched = true;
-        for(size_t i = 0; i < matched.size(); i++){
-            if(!matched[i].second){
+        for(size_t i = 0; i < matching.size(); i++){
+            if(!matching[i] == -1){
                 all_matched = false;
-                root = matched[i].first;
+                root = i;
+                break;
             }
         }
 
@@ -147,37 +153,44 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        std::vector<int> even;
-        std::vector<int> odd;
+        std::queue<int> candidates; // 2. Expand/shrink moats(blossoms)/discs(augment tree).
+        while(!candidates.empty()){
+            int u = candidates.front(); // 1) Choose u.
+            candidates.pop();   // 2) Delete candidates.
+            int delta; // = calc_delta(); maybe?
 
-        int delta;
+            // for(size_t i = 0; i < radius.size(); i++){
+            //     // if(label[i] == 1){
+            //     //     radius[i] += delta;
+            //     // }
+            //     // else if(label[i] == 2){
+            //     //     radius[i] -= delta;
+            //     // }
+            //     for(size_t j = 0; j < label.size(); j++){
+            //         if(label[j].first == radius[i].first){
+            //             if(label[j].second == 1){
+            //                 radius[i].second += delta;
+            //             }
+            //             else if(label[j].second == 2){
+            //                 radius[i].second -= delta;
+            //             }
+            //         }
+            //     }
+            // }
 
-        for(size_t i = 0; i < radius.size(); i++){
-            for(size_t j = 0; j < label.size(); j++){
-                if(label[j].first == radius[i].first){
-                    if(label[j].second == 1){
-                        radius[i].second += delta;
-                    }
-                    else if(label[j].second == 2){
-                        radius[i].second -= delta;
-                    }
-                }
-            }
+            // for(size_t i = 0; i < moats.size(); i++){
+            //     for(size_t j = 0; j < radius.size(); j++){
+            //         if(moats[j].first == radius[i].first){
+            //             if(radius[i].second == 0){
+            //                 // Break moats.
+            //                 // Remove tight edges occurd from moats.
+            //             }
+            //         }
+            //     }
+            // }
+
+
         }
-
-        for(size_t i = 0; i < moats.size(); i++){
-            for(size_t j = 0; j < radius.size(); j++){
-                if(moats[j].first == radius[i].first){
-                    if(radius[i].second == 0){
-                        // Break moats.
-                        // Remove tight edges occurd from moats.
-                    }
-                }
-            }
-        }
-
-
-
 
     }
 
