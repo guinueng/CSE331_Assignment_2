@@ -5,9 +5,8 @@
 #include <sstream>
 #include <cmath>
 #include <cfloat>
-#include <algorithm>
 #include <iomanip>
-#include <queue>
+#include <algorithm>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -21,6 +20,16 @@ long double calc_2d_dist(long double first_x, long double first_y, long double s
 
 bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
     return a.second < b.second;
+}
+
+void find_hc(std::vector<std::vector<std::pair<int, long double>>>& child, std::vector<int>& mst_hc, std::vector<bool>& visited, int idx){
+    visited[idx] = true;
+    mst_hc.push_back(idx);
+    for(auto i: child[idx]){
+        if(!visited[i.first]){
+            find_hc(child, mst_hc, visited, i.first);
+        }
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -69,6 +78,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::vector<std::pair<int, long double>>> child(n);
     std::vector<long double> key(n, INF); // Use long double
     std::vector<bool> in_mst(n, false);
+    std::vector<int> conn_stat(n, 0);
 
     key[0] = 0;
     parent[0] = -1;
@@ -113,82 +123,28 @@ int main(int argc, char* argv[]) {
     }
     printf("1\n");
 
-    std::vector<int> odd_vertex;
     for(size_t i = 0; i < n; i++){
-        if(child[i].size() % 2 != 0){
-            odd_vertex.push_back(i);
+        std::sort(child[i].begin(), child[i].end(), cmp_weight);
+        for(auto j: child[i]){
+            std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
         }
     }
 
-    int odd_vertex_qty = odd_vertex.size();
-    
-    std::vector<int> matching;  // Pair of matching.
-    std::vector<std::pair<int, int>> tight; // <<u, v>, weight>
-    std::vector<std::vector<int>> moats;    // Vertex inside in blossoms.
-    std::vector<int> label(odd_vertex_qty, -1);  // target idx, unmatched/even/odd(0/1/2) state.
-    std::vector<int> parent(odd_vertex_qty, -1);
-    std::vector<bool> in_que(odd_vertex_qty, false);
-    std::vector<int> tree_root(odd_vertex_qty, 0);
+    std::vector<int> mst_hc; // 2. Find HC in MST.
+    std::vector<bool> visited (n, false);
+    find_hc(child, mst_hc, visited, 0);
 
-    while(true){
-        std::vector<int> radius(odd_vertex_qty, 0); // Radius of each vertex/moats. 0+ for vertex(discs), -1- for moats(blossoms).
-        for(size_t i = 0; i < odd_vertex_qty; i++){
-            parent[i] = -1;
-            in_que[i] = false;
-            label[i] = 0;
-            tree_root[i] = i;
-        }
-
-        int root = 0;
-        bool all_matched = true;
-        for(size_t i = 0; i < matching.size(); i++){
-            if(!matching[i] == -1){
-                all_matched = false;
-                root = i;
-                break;
-            }
-        }
-
-        if(all_matched){ // 1. Find termination cond.
-            break;
-        }
-
-        std::queue<int> candidates; // 2. Expand/shrink moats(blossoms)/discs(augment tree).
-        while(!candidates.empty()){
-            int u = candidates.front(); // 1) Choose u.
-            candidates.pop();   // 2) Delete candidates.
-            int delta; // = calc_delta(); maybe?
-
-            for(size_t v = 0; v < odd_vertex_qty; v++){
-                if(tree_root[u] == tree_root[v] || matching[u] == v){ // case 1. matched one or locates in same tree.
-                    continue;
-                }
-
-                if(v == root || (matching[v] != -1 && parent[matching[v]] != -1)){ // If found loops.
-                    // Can create blossoms.
-                }
-                else if(parent[v] == -1){ // If no loops.
-                    parent[v] = u;
-                    if(matching[v] == -1){ // If selected node is not matched -> Can increase augment paths.
-                        int curr_idx = v;
-                        while(curr_idx != -1){
-                            int parent_idx = parent[curr_idx];
-                            int parent_matching = matching[parent_idx];
-
-                            matching[curr_idx] = parent_idx;
-                            matching[parent_idx] = curr_idx;
-
-                            curr_idx = parent_matching;
-                        }
-                    }
-                    else{   // If has matchings, but does not have parent.
-                        candidates.push(matching[v]);
-                        in_que[matching[v]] = true;
-                    }
-                }
-            }
-        }
+    long double aprx_weight = 0;
+    for(size_t i = 0; i < n - 1; i++){
+        aprx_weight += calc_2d_dist(vertices[mst_hc[i]].second.first, vertices[mst_hc[i]].second.second, vertices[mst_hc[i + 1]].second.first, vertices[mst_hc[i + 1]].second.second);
     }
+    aprx_weight += calc_2d_dist(vertices[n - 1].second.first, vertices[n - 1].second.second, vertices[0].second.first, vertices[0].second.second);
+
+    for(auto i: mst_hc){
+        std::cout << i << "\t";
+    }
+
+    std::cout << "\naprx dist: " << aprx_weight << std::endl;
 
     return 0;
 }
