@@ -21,13 +21,14 @@ float calc_2d_dist(std::pair<float, float> first, std::pair<float, float> second
     return sqrt(x_dif * x_dif + y_dif * y_dif);
 }
 
-float TSP(std::vector<int> &vertex, std::vector<int> &tour, std::vector<std::vector<float>> adj_matrix, int target){
+float TSP(std::vector<int> &vertex, std::vector<int> &tour, std::vector<std::pair<int, std::pair<float, float>>>& vertex_list, int target){
     if(vertex.size() == 1){
         tour.push_back(1);
         tour.push_back(vertex[0]);
         // print("Final: ", tour);
         // printf("min: %f\n", adj_matrix[0][(vertex[0] - 1)]);
-        return adj_matrix[0][(vertex[0] - 1)] + adj_matrix[vertex[0] - 1][target - 1];
+        return calc_2d_dist(vertex_list[0].second, vertex_list[vertex[0] - 1].second) + calc_2d_dist(vertex_list[vertex[0] - 1].second, vertex_list[target - 1].second);
+        // return adj_matrix[0][(vertex[0] - 1)] + adj_matrix[vertex[0] - 1][target - 1];
         // Base case. Return a_1l. Since vertex saves city in range [1, n], need to distract 1.
     }
 
@@ -42,10 +43,10 @@ float TSP(std::vector<int> &vertex, std::vector<int> &tour, std::vector<std::vec
 
     for(size_t i = 0; i <= tmp_vertex.size(); i++){
         std::vector<int> tmp_tour;
-        print("tmp: ", tmp_vertex);
+        // printf("tmp: ", tmp_vertex);
         // printf("selected: %d\n", del_pos);
         // printf("target: %d, del_pos: %d\n", target, del_pos);
-        tmp_dist = TSP(tmp_vertex, tmp_tour, adj_matrix, del_pos) + adj_matrix[target - 1][del_pos - 1];
+        tmp_dist = TSP(tmp_vertex, tmp_tour, vertex_list, del_pos) + calc_2d_dist(vertex_list[target - 1].second, vertex_list[del_pos - 1].second);
         // printf("a_ml: %f\n", adj_matrix[target - 1][del_pos - 1]);
         if(i == 0){
             min = tmp_dist;
@@ -70,14 +71,14 @@ float TSP(std::vector<int> &vertex, std::vector<int> &tour, std::vector<std::vec
     }
 
     tour.push_back(min_vertex);
-    print("Final: ", tour);
-    printf("min: %f\n", min);
+    // print("Final: ", tour);
+    // printf("min: %f\n", min);
     return min;
 }
 
 int main(int argc, char* argv[]){
-    if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <dataset> <opt>\n";
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
     }
 
@@ -112,56 +113,56 @@ int main(int argc, char* argv[]){
         vertex_list.emplace_back(city);
     }
 
-    for(const auto i: vertex){ // Print vertex info.
+    for(const auto &i: vertex){ // Print vertex info.
         std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
     }
     std::cout << "\n";
 
-    int n = vertex.size(); // Check total input.
-    std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
+    // int n = vertex.size(); // Check total input.
+    // std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
 
-    // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
-    for(size_t i = 0; i < n; i++){
-        adj_matrix[i][i] = 0;
+    // // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
+    // for(size_t i = 0; i < n; i++){
+    //     adj_matrix[i][i] = 0;
 
-        for(size_t j = i + 1; j < n; j++){
-            float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
-            adj_matrix[i][j] = dist;
-            adj_matrix[j][i] = dist;
-        }
-    }
+    //     for(size_t j = i + 1; j < n; j++){
+    //         float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
+    //         adj_matrix[i][j] = dist;
+    //         adj_matrix[j][i] = dist;
+    //     }
+    // }
 
-    for(const auto i: adj_matrix){ // Print adj_matrix info.
-        for(const auto j: i){
-            std::cout << j << " ";
-        }
-        std::cout << "\n";
-    }
+    // for(const auto i: adj_matrix){ // Print adj_matrix info.
+    //     for(const auto j: i){
+    //         std::cout << j << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
 
     float min_dist, tmp_dist;
     std::vector<int> tour;
     int tmp_vertex = vertex_list[1];
     int min_vertex, tmp;
     vertex_list.erase(vertex_list.begin(), vertex_list.begin() + 2);
-    print("original vertex list", vertex_list);
+    // print("original vertex list", vertex_list);
     tour.push_back(1);
     
     for(size_t i = 0; i <= (size_t)vertex_list.size(); i++){
-        print("vertex_list", vertex_list);
+        // print("vertex_list", vertex_list);
         std::vector<int> tmp_tour;
-        tmp_dist = TSP(vertex_list, tmp_tour, adj_matrix, tmp_vertex) + adj_matrix[0][tmp_vertex - 1];
+        tmp_dist = TSP(vertex_list, tmp_tour, vertex, tmp_vertex) + calc_2d_dist(vertex[0].second, vertex[tmp_vertex - 1].second);
         if(i == 0){
             min_dist = tmp_dist;
             min_vertex = tmp_vertex;
             tour = tmp_tour;
-            std::cout << "first dist: " << min_dist << "\n";
+            // std::cout << "first dist: " << min_dist << "\n";
         }
         else{
             if(min_dist > tmp_dist){
                 min_dist = tmp_dist;
                 min_vertex = tmp_vertex;
                 tour = tmp_tour;
-                std::cout << "updated: "<< min_dist << "\n";
+                // std::cout << "updated: "<< min_dist << "\n";
             }
         }
 

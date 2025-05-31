@@ -74,65 +74,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    std::vector<int> parent(n);
-    std::vector<std::vector<std::pair<int, long double>>> child(n);
-    std::vector<long double> key(n, INF); // Use long double
-    std::vector<bool> in_mst(n, false);
-    std::vector<int> conn_stat(n, 0);
-
-    key[0] = 0;
-    parent[0] = -1;
-
-    for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
-        int u = -1;
-        long double min_key = INF; // Use long double
-        for (size_t v = 0; v < n; v++) {
-            if (!in_mst[v] && key[v] < min_key) {
-                min_key = key[v];
-                u = v;
-            }
-        }
-
-        if (u == -1) {
-            std::cerr << "Error: MST construction failed. Graph is not connected.\n";
-            return EXIT_FAILURE;
-        }
-        in_mst[u] = true;
-
-        for (size_t v = 0; v < n; v++) {
-            long double dist = calc_2d_dist(vertices[u].second.first, vertices[u].second.second, vertices[v].second.first, vertices[v].second.second);
-            if (!in_mst[v] && dist < key[v]) {
-                parent[v] = u;
-                key[v] = dist;
-            }
-        }
-    } // Helped by gemini in google.inc(url: https://g.co/gemini/share/1528ec3e4e49)
-
-    long double total_weight = 0; // Use long double
-    std::cout << "Edge \tWeight\n";
-    std::cout << std::fixed << std::setprecision(15); // Increase precision
-
-    long double w = 0;
-    for(size_t i = 0; i < n; i++){
-        w += key[i];
-    }
-    std::cout << "Total MST weight in key: " << w << std::endl;
-
-    for(size_t i = 1; i < n; i++){
-        child[parent[i]].emplace_back(i, key[i]);
-    }
-    printf("1\n");
-
-    for(size_t i = 0; i < n; i++){
-        std::sort(child[i].begin(), child[i].end(), cmp_weight);
-        for(auto j: child[i]){
-            std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
-        }
-    }
-
-    std::vector<int> mst_hc; // 2. Find HC in MST.
-    std::vector<bool> visited (n, false);
-    find_hc(child, mst_hc, visited, 0);
+    
 
     long double aprx_weight = 0;
     for(size_t i = 0; i < n - 1; i++){

@@ -12,9 +12,9 @@
 #define INF DBL_MAX
 
 // Use long double for distance calculation to improve precision.
-long double calc_2d_dist(long double first_x, long double first_y, long double second_x, long double second_y) {
-    long double x_diff = std::abs(first_x - second_x);
-    long double y_diff = std::abs(first_y - second_y);
+long double calc_2d_dist(std::pair<long double, long double> first, std::pair<long double, long double> second) {
+    long double x_diff = std::abs(first.first - second.first);
+    long double y_diff = std::abs(first.second - second.second);
     return std::sqrt(x_diff * x_diff + y_diff * y_diff);
 }
 
@@ -22,14 +22,44 @@ bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
     return a.second < b.second;
 }
 
-void find_hc(std::vector<std::vector<std::pair<int, long double>>>& child, std::vector<int>& mst_hc, std::vector<bool>& visited, int idx){
-    visited[idx] = true;
-    mst_hc.push_back(idx);
-    for(auto i: child[idx]){
-        if(!visited[i.first]){
-            find_hc(child, mst_hc, visited, i.first);
+void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid){
+    for(size_t i = 0; i < iter; i++){
+        for(size_t j = 0; j < vertex.size(); j++){  // 1. Assign cluster.
+            int closest = 0;
+            int closest_dist = INF;
+            for(size_t k = 0; k < centroid.size(); k++){
+                long double tmp_dist = calc_2d_dist(vertex[j].second, centroid[k]);
+                if(tmp_dist < closest_dist){
+                    closest = k;
+                    closest_dist = tmp_dist;
+                }
+            }
+
+            cluster[closest].push_back(j);
+        }
+
+        for(size_t j = 0; j < cluster.size(); j++){ // 2. Update centroid.
+            long double x_sum = 0;
+            long double y_sum = 0;
+            size_t qty = cluster[j].size();
+            for(size_t k = 0; k < qty; k++){
+                x_sum += vertex[cluster[j][k]].second.first;
+                y_sum += vertex[cluster[j][k]].second.second;
+            }
+
+            x_sum /= qty;
+            y_sum /= qty;
+
+            centroid[j].first = x_sum;
+            centroid[j].second = y_sum;
         }
     }
+}
+
+void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k,
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid){
+    
 }
 
 int main(int argc, char* argv[]) {
@@ -74,65 +104,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    std::vector<int> parent(n);
-    std::vector<std::vector<std::pair<int, long double>>> child(n);
-    std::vector<long double> key(n, INF); // Use long double
-    std::vector<bool> in_mst(n, false);
-    std::vector<int> conn_stat(n, 0);
-
-    key[0] = 0;
-    parent[0] = -1;
-
-    for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
-        int u = -1;
-        long double min_key = INF; // Use long double
-        for (size_t v = 0; v < n; v++) {
-            if (!in_mst[v] && key[v] < min_key) {
-                min_key = key[v];
-                u = v;
-            }
-        }
-
-        if (u == -1) {
-            std::cerr << "Error: MST construction failed. Graph is not connected.\n";
-            return EXIT_FAILURE;
-        }
-        in_mst[u] = true;
-
-        for (size_t v = 0; v < n; v++) {
-            long double dist = calc_2d_dist(vertices[u].second.first, vertices[u].second.second, vertices[v].second.first, vertices[v].second.second);
-            if (!in_mst[v] && dist < key[v]) {
-                parent[v] = u;
-                key[v] = dist;
-            }
-        }
-    } // Helped by gemini in google.inc(url: https://g.co/gemini/share/1528ec3e4e49)
-
-    long double total_weight = 0; // Use long double
-    std::cout << "Edge \tWeight\n";
-    std::cout << std::fixed << std::setprecision(15); // Increase precision
-
-    long double w = 0;
-    for(size_t i = 0; i < n; i++){
-        w += key[i];
-    }
-    std::cout << "Total MST weight in key: " << w << std::endl;
-
-    for(size_t i = 1; i < n; i++){
-        child[parent[i]].emplace_back(i, key[i]);
-    }
-    printf("1\n");
-
-    for(size_t i = 0; i < n; i++){
-        std::sort(child[i].begin(), child[i].end(), cmp_weight);
-        for(auto j: child[i]){
-            std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
-        }
-    }
-
-    std::vector<int> mst_hc; // 2. Find HC in MST.
-    std::vector<bool> visited (n, false);
-    find_hc(child, mst_hc, visited, 0);
+    
 
     long double aprx_weight = 0;
     for(size_t i = 0; i < n - 1; i++){
