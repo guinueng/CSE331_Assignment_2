@@ -2,7 +2,7 @@
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = 2_Approximation_Algorithm 2_apprx_eval Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
+TARGETS = min_weight_loop_w_insertion #2_Approximation_Algorithm 2_apprx_eval Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
 
 all: $(TARGETS)
 
@@ -40,6 +40,12 @@ Held-Karp_algorithm: Held-Karp_algorithm.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 Held-Karp_algorithm.o: Held-Karp_algorithm.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+min_weight_loop_w_insertion: min_weight_loop_w_insertion.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+min_weight_loop_w_insertion.o: min_weight_loop_w_insertion.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: clean

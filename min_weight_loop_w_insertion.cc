@@ -62,8 +62,8 @@ int main(int argc, char* argv[]) {
 
     std::vector<int> loop;  // 1. Find loop of city which goes to 1 or make loops.
     std::vector<bool> visited (n, false);
-    int visit_qty = 0;
-    int idx = 1;
+    size_t visit_qty = 0;
+    int idx = 0;
 
     while(visit_qty != n){
         visited[idx] = true;
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
         loop.push_back(idx);
         int small_idx;
         long double small_dist = INF;
-        for(int i = 0; i < n; i++){
+        for(size_t i = 0; i < n; i++){
             if(!visited[i]){
                 long double tmp_dist = calc_2d_dist(vertices[idx], vertices[i]);
                 if(small_dist > tmp_dist){
@@ -83,20 +83,24 @@ int main(int argc, char* argv[]) {
 
         idx = small_idx;
         if(idx == 1 || visit_qty == (n - 1)){
-            loop.push_back(1);
+            if(idx != 1 && visit_qty == (n - 1)){
+                visited[idx] = true;
+                loop.push_back(idx);
+            }
+            loop.push_back(0);
             break;
         }
     }
 
-    int unvisited = n - visit_qty;
+    printf("2\n");
     std::vector<std::vector<std::pair<int, long double>>> candidates(n);
-    for(int i = 0; i < n; i++){ // 2. Insert unvisited city in loops.
+    for(size_t i = 0; i < n; i++){ // 2. Insert unvisited city in loops.
         long double min_weight = INF;
-        int min_idx;
+        int min_idx = -1;
 
         if(!visited[i]){
-            for(int j = 0; j < (loop.size() - 1); j++){
-                long double tmp_dist = calc_2d_dist(vertices[j], vertices[i]) + calc_2d_dist(vertices[i], vertices[j + 1]);
+            for(size_t j = 0; j < (size_t)(loop.size() - 1); j++){
+                long double tmp_dist = calc_2d_dist(vertices[loop[j]], vertices[i]) + calc_2d_dist(vertices[loop[i]], vertices[j + 1]);
                 if(tmp_dist < min_weight){
                     min_weight = tmp_dist;
                     min_idx = j + 1;
@@ -104,12 +108,14 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        visited[i] = true;
-        loop.insert(loop.begin() + min_idx, i);
+        if(min_idx != -1){
+            visited[i] = true;
+            loop.insert(loop.begin() + min_idx, i);
+        }
     }
 
     long double aprx_weight = 0;
-    for(size_t i = 0; i < n - 1; i++){
+    for(size_t i = 0; i < n - 2; i++){
         aprx_weight += calc_2d_dist(vertices[loop[i]], vertices[loop[i + 1]]);
     }
 
@@ -117,6 +123,7 @@ int main(int argc, char* argv[]) {
         std::cout << i << "\t";
     }
 
+    std::cout << std::fixed << std::setprecision(15); // Increase precision
     std::cout << "\naprx dist: " << aprx_weight << std::endl;
 
     return 0;
