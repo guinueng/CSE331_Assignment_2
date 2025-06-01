@@ -23,43 +23,67 @@ bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
 }
 
 void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
-            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid){
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, int& one_cont_vertex){
+    std::vector<std::pair<long double, long double>> prev_centroid = centroid;
     for(size_t i = 0; i < iter; i++){
+        std::vector<std::vector<int>> new_cluster(k);
         for(size_t j = 0; j < vertex.size(); j++){  // 1. Assign cluster.
             int closest = 0;
-            int closest_dist = INF;
-            for(size_t k = 0; k < centroid.size(); k++){
-                long double tmp_dist = calc_2d_dist(vertex[j].second, centroid[k]);
+            long double closest_dist = INF;
+            for(size_t l = 0; l < centroid.size(); l++){
+                long double tmp_dist = calc_2d_dist(vertex[j].second, centroid[l]);
                 if(tmp_dist < closest_dist){
-                    closest = k;
+                    closest = l;
                     closest_dist = tmp_dist;
                 }
             }
 
-            cluster[closest].push_back(j);
+            new_cluster[closest].push_back(j);
         }
 
-        for(size_t j = 0; j < cluster.size(); j++){ // 2. Update centroid.
+        cluster = new_cluster;
+        int cnt = 0;    // Counting early termination cond met.
+        for(size_t j = 0; j < k; j++){ // 2. Update centroid.
             long double x_sum = 0;
             long double y_sum = 0;
             size_t qty = cluster[j].size();
-            for(size_t k = 0; k < qty; k++){
-                x_sum += vertex[cluster[j][k]].second.first;
-                y_sum += vertex[cluster[j][k]].second.second;
+            for(size_t l = 0; l < qty; l++){
+                int tmp_idx = cluster[j][l];
+                x_sum += vertex[tmp_idx].second.first;
+                y_sum += vertex[tmp_idx].second.second;
+                if(tmp_idx == 0){
+                    one_cont_vertex = tmp_idx;
+                }
             }
 
-            x_sum /= qty;
-            y_sum /= qty;
+            if(qty > 0){
+                x_sum /= qty;
+                y_sum /= qty;
+                
+                centroid[j].first = x_sum;
+                centroid[j].second = y_sum;
+                
+                if(abs(prev_centroid[j].first - x_sum) < 0.0001 && abs(prev_centroid[j].second - y_sum) < 0.0001){
+                    cnt++;
+                }
+            }
+        }
 
-            centroid[j].first = x_sum;
-            centroid[j].second = y_sum;
+        if(cnt == k){
+            break;
         }
     }
 }
 
-void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k,
-            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid){
-    
+void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, int& one_cont_vertex){
+    size_t vertex_size = vertex.size() / k;
+    for(size_t i = 0; i < centroid.size(); i++){
+        centroid[i].first = vertex[vertex_size * i].second.first;
+        centroid[i].second = vertex[vertex_size * i].second.second;
+    }
+
+    k_means(vertex, k, iter, cluster, centroid, one_cont_vertex);
 }
 
 int main(int argc, char* argv[]) {
@@ -103,6 +127,13 @@ int main(int argc, char* argv[]) {
         std::cerr << "No vertices found in the file.\n";
         return EXIT_FAILURE;
     }
+
+    int k = 10;
+    int iter = 100;
+    int one_cont_vertex = 0;
+    std::vector<std::vector<int>> cluster(k);
+    std::vector<std::pair<long double, long double>> centroid(k);
+    k_means_init(vertices, k, iter, cluster, centroid, one_cont_vertex);
 
     
 
