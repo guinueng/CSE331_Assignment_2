@@ -23,7 +23,11 @@ void runProgram(const std::string& program, const std::string& input_arg_1) {
 int main() {
     // List of programs and their arguments
     std::vector<std::string> progs = {
-        "./2_Approximation_Algorithm"
+        "./2_Approximation_Algorithm",
+        "./Held-Karp_algorithm",
+        "./k-means",
+        "./min_weight_loop_w_insertion",
+        "./brute-force"
     };
  
     std::vector<std::string> args = {
@@ -33,7 +37,7 @@ int main() {
         "a280.tsp",
         "xql662.tsp",
         "kz9976.tsp",
-        // "mona-lisa100K.tsp",
+        "mona-lisa100K.tsp",
     };
 
     // Run each program in sequence

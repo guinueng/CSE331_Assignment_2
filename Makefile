@@ -2,32 +2,20 @@
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = k-means # min_weight_loop_w_insertion brute_force #2_Approximation_Algorithm 2_apprx_eval Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
+TARGETS = k-means min_weight_loop_w_insertion brute_force 2_Approximation_Algorithm Christofides_heuristic total_eval Held-Karp_algorithm
 
 all: $(TARGETS)
 
-auto_eval: auto_eval.o
+total_eval: total_eval.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-auto_eval.o: auto_eval.cc
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-chris_auto_eval: chris_auto_eval.o
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-
-chris_auto_eval.o: chris_auto_eval.cc
+total_eval.o: total_eval.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 2_Approximation_Algorithm: 2_Approximation_Algorithm.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 2_Approximation_Algorithm.o: 2_Approximation_Algorithm.cc
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-2_apprx_eval: 2_apprx_eval.o
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-
-2_apprx_eval.o: 2_apprx_eval.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Christofides_heuristic: Christofides_heuristic.o

@@ -48,7 +48,7 @@ int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long doub
     key[start_city] = 0;
     parent[start_city] = -1;
 
-    printf("111\n");
+    // printf("111\n");
     for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
         int u = -1;
         long double min_key = INF; // Use long double
@@ -83,25 +83,25 @@ int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long doub
     //     w += key[i];
     // }
     // std::cout << "Total MST weight in key: " << w << std::endl;
-    printf("222\n");
+    // printf("222\n");
     for(size_t i = 0; i < n; i++){
         if(!(parent[i] < 0)){
             child[parent[i]].emplace_back(i, key[i]);
         }
     }
-    // printf("1\n");
-    printf("333\n");
+    // // printf("1\n");
+    // printf("333\n");
     for(size_t i = 0; i < n; i++){
         std::sort(child[i].begin(), child[i].end(), cmp_weight);
         // for(auto j: child[i]){
         //     std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
         // }
     }
-    printf("444\n");
+    // printf("444\n");
     // std::vector<int> result; // 2. Find HC in MST.
     std::vector<bool> visited (n, false);
     find_hc(target, child, result, visited, 0);
-    printf("555\n");
+    // printf("555\n");
     return 0;
 }
 
@@ -223,20 +223,20 @@ int main(int argc, char* argv[]) {
     // int idx = 0;
     visited[one_cont_vertex] = true;
     // for(size_t i = 0; i < cluster[one_cont_vertex].size(); i++){
-    printf("11\n");
+    // printf("11\n");
     std::sort(cluster[one_cont_vertex].begin(), cluster[one_cont_vertex].end());
     mst(cluster[one_cont_vertex], vertices, aprx_tour, 0);
     int last_city = aprx_tour.back();
     // Find opt tour of inside cluster which contains 1.
     // }
 
-    printf("22\n");
+    // printf("22\n");
     // Find remainder's opt path.
     for(size_t i = 0; i < k; i++){
         int min_dist_cluster = 0;
         long double min_dist = INF;
         bool unvisited = false;
-        printf("44\n");
+        // printf("44\n");
         for(size_t j = 0; j < k; j++){  // Find min dist cluster.
             if(!visited[j]){
                 unvisited = true;
@@ -248,18 +248,18 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        printf("55\n");
+        // printf("55\n");
         if (cluster[min_dist_cluster].empty()){
-            printf("empty cluster\n");
+            // printf("empty cluster\n");
             continue;
         }
 
         if(!unvisited){
-            printf("all visited\n");
+            // printf("all visited\n");
             break;
         }
 
-        printf("66\n");
+        // printf("66\n");
         // Find closest city.
         visited[min_dist_cluster] = true;
         int start_city = cluster[min_dist_cluster].front();
@@ -273,16 +273,16 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        printf("77\n");
+        // printf("77\n");
         // Find hc of target cluster.
         std::vector<int> tmp_rst;
         mst(cluster[min_dist_cluster], vertices, tmp_rst, start_city);
-        printf("88\n");
+        // printf("88\n");
         // Append result into aprx_tour.
         aprx_tour.insert(aprx_tour.end(), tmp_rst.begin(), tmp_rst.end());
         last_city = aprx_tour.back();
     }
-    printf("33\n");
+    // printf("33\n");
 
     // Add connection btw last city and first city.
     aprx_tour.push_back(0);

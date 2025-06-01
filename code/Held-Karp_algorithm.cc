@@ -67,7 +67,7 @@ int main(int argc, char* argv[]){
 
     int n = vertex.size(); // Check total input.
 
-    auto adj_matrix_end = std::chrono::high_resolution_clock::now();
+    // auto adj_matrix_end = std::chrono::high_resolution_clock::now();
 
     // dp[subset][last] = minimum cost to reach 'last' having visited 'subset'
     // Representing visited subset as bitmask.
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]){
 
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     // auto adj_matrix_duration = std::chrono::duration_cast<std::chrono::milliseconds>(adj_matrix_end - file_open_end).count();
-    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - adj_matrix_end).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - file_open_end).count();
     std::cout << "Execution time: " << duration << "(ms)\n";
     // std::cout << "adj matrix time: " << adj_matrix_duration << "(ms)\n";
     std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
