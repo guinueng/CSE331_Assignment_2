@@ -25,15 +25,20 @@ bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
 void find_hc(std::vector<int>& target, std::vector<std::vector<std::pair<int, long double>>>& child, std::vector<int>& mst_hc, std::vector<bool>& visited, int idx){
     visited[idx] = true;
     mst_hc.push_back(target[idx]);
-    for(auto i: child[idx]){
-        if(!visited[i.first]){
-            find_hc(target, child, mst_hc, visited, i.first);
+    for(size_t i = 0; i < child.size(); i++){
+        if(!visited[i]){
+            find_hc(target, child, mst_hc, visited, i);
         }
     }
+    // for(auto i: child[idx]){
+    //     if(!visited[i.first]){
+    //         find_hc(target, child, mst_hc, visited, i.first);
+    //     }
+    // }
 }
 
 int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, std::vector<int>& result, int start_city){
-    int n = target.size();
+    size_t n = target.size();
     std::vector<int> parent(n);
     std::vector<std::vector<std::pair<int, long double>>> child(n);
     std::vector<long double> key(n, INF); // Use long double
@@ -43,6 +48,7 @@ int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long doub
     key[start_city] = 0;
     parent[start_city] = -1;
 
+    printf("111\n");
     for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
         int u = -1;
         long double min_key = INF; // Use long double
@@ -77,26 +83,30 @@ int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long doub
     //     w += key[i];
     // }
     // std::cout << "Total MST weight in key: " << w << std::endl;
-
-    for(size_t i = 1; i < n; i++){
-        child[parent[i]].emplace_back(i, key[i]);
+    printf("222\n");
+    for(size_t i = 0; i < n; i++){
+        if(!(parent[i] < 0)){
+            child[parent[i]].emplace_back(i, key[i]);
+        }
     }
     // printf("1\n");
-
+    printf("333\n");
     for(size_t i = 0; i < n; i++){
         std::sort(child[i].begin(), child[i].end(), cmp_weight);
         // for(auto j: child[i]){
         //     std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
         // }
     }
-
+    printf("444\n");
     // std::vector<int> result; // 2. Find HC in MST.
     std::vector<bool> visited (n, false);
     find_hc(target, child, result, visited, 0);
+    printf("555\n");
+    return 0;
 }
 
-void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
-            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, int& one_cont_vertex){
+void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, size_t k, size_t iter,
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, size_t& one_cont_vertex){
     std::vector<std::pair<long double, long double>> prev_centroid = centroid;
     for(size_t i = 0; i < iter; i++){
         std::vector<std::vector<int>> new_cluster(k);
@@ -115,7 +125,7 @@ void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& v
         }
 
         cluster = new_cluster;
-        int cnt = 0;    // Counting early termination cond met.
+        size_t cnt = 0;    // Counting early termination cond met.
         for(size_t j = 0; j < k; j++){ // 2. Update centroid.
             long double x_sum = 0;
             long double y_sum = 0;
@@ -148,8 +158,8 @@ void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& v
     }
 }
 
-void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
-            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, int& one_cont_vertex){
+void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, size_t k, size_t iter,
+            std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, size_t& one_cont_vertex){
     size_t vertex_size = vertex.size() / k;
     for(size_t i = 0; i < centroid.size(); i++){
         centroid[i].first = vertex[vertex_size * i].second.first;
@@ -201,30 +211,35 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    int k = 10;
-    int iter = 100;
-    int one_cont_vertex = 0;
+    size_t k = 10;
+    size_t iter = 100;
+    size_t one_cont_vertex = 0;
     std::vector<std::vector<int>> cluster(k);
     std::vector<std::pair<long double, long double>> centroid(k);
     k_means_init(vertices, k, iter, cluster, centroid, one_cont_vertex);
 
     std::vector<int> aprx_tour;
     std::vector<bool> visited(k, false);
-    int idx = 0;
+    // int idx = 0;
     visited[one_cont_vertex] = true;
     // for(size_t i = 0; i < cluster[one_cont_vertex].size(); i++){
+    printf("11\n");
     std::sort(cluster[one_cont_vertex].begin(), cluster[one_cont_vertex].end());
     mst(cluster[one_cont_vertex], vertices, aprx_tour, 0);
     int last_city = aprx_tour.back();
-        // Find opt tour of inside cluster which contains 1.
+    // Find opt tour of inside cluster which contains 1.
     // }
 
+    printf("22\n");
     // Find remainder's opt path.
     for(size_t i = 0; i < k; i++){
         int min_dist_cluster = 0;
         long double min_dist = INF;
+        bool unvisited = false;
+        printf("44\n");
         for(size_t j = 0; j < k; j++){  // Find min dist cluster.
             if(!visited[j]){
+                unvisited = true;
                 long double tmp_dist = calc_2d_dist(vertices[last_city].second, centroid[j]);
                 if(tmp_dist < min_dist){
                     min_dist_cluster = j;
@@ -233,22 +248,41 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        printf("55\n");
+        if (cluster[min_dist_cluster].empty()){
+            printf("empty cluster\n");
+            continue;
+        }
+
+        if(!unvisited){
+            printf("all visited\n");
+            break;
+        }
+
+        printf("66\n");
         // Find closest city.
         visited[min_dist_cluster] = true;
         int start_city = cluster[min_dist_cluster].front();
-        int min_intercity_dist = INF;
+        long double min_intercity_dist = INF;
         for(size_t j = 0; j < cluster[min_dist_cluster].size(); j++){
             long double tmp_dist = calc_2d_dist(vertices[last_city].second, vertices[cluster[min_dist_cluster][j]].second);
+            if(tmp_dist < min_intercity_dist){
+                // start_city = cluster[min_dist_cluster][j];
+                start_city = j;
+                min_intercity_dist = tmp_dist;
+            }
         }
 
+        printf("77\n");
         // Find hc of target cluster.
         std::vector<int> tmp_rst;
         mst(cluster[min_dist_cluster], vertices, tmp_rst, start_city);
-        
+        printf("88\n");
         // Append result into aprx_tour.
         aprx_tour.insert(aprx_tour.end(), tmp_rst.begin(), tmp_rst.end());
         last_city = aprx_tour.back();
     }
+    printf("33\n");
 
     // Add connection btw last city and first city.
     aprx_tour.push_back(0);
@@ -262,6 +296,7 @@ int main(int argc, char* argv[]) {
         std::cout << i + 1 << "\t";
     }
 
+    std::cout << std::fixed << std::setprecision(15); // Increase precision
     std::cout << "\naprx dist: " << aprx_weight << std::endl;
 
     return 0;

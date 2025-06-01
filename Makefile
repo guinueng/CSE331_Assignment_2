@@ -2,7 +2,7 @@
 CXXFLAGS += -Wall -O2 -std=c++23 -g $(SANFLAGS)
 LDFLAGS += $(SANFLAGS)
 
-TARGETS = min_weight_loop_w_insertion brute_force #2_Approximation_Algorithm 2_apprx_eval Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
+TARGETS = k-means # min_weight_loop_w_insertion brute_force #2_Approximation_Algorithm 2_apprx_eval Christofides_heuristic chris_auto_eval #auto_eval #Held-Karp_algorithm
 
 all: $(TARGETS)
 
@@ -52,6 +52,12 @@ brute_force: brute_force.o
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 brute_force.o: brute_force.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+k-means: k-means.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+k-means.o: k-means.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 .PHONY: clean
