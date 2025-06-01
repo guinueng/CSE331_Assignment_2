@@ -22,6 +22,79 @@ bool cmp_weight(std::pair<int, long double> a, std::pair<int, long double> b){
     return a.second < b.second;
 }
 
+void find_hc(std::vector<int>& target, std::vector<std::vector<std::pair<int, long double>>>& child, std::vector<int>& mst_hc, std::vector<bool>& visited, int idx){
+    visited[idx] = true;
+    mst_hc.push_back(target[idx]);
+    for(auto i: child[idx]){
+        if(!visited[i.first]){
+            find_hc(target, child, mst_hc, visited, i.first);
+        }
+    }
+}
+
+int mst(std::vector<int>& target, std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, std::vector<int>& result, int start_city){
+    int n = target.size();
+    std::vector<int> parent(n);
+    std::vector<std::vector<std::pair<int, long double>>> child(n);
+    std::vector<long double> key(n, INF); // Use long double
+    std::vector<bool> in_mst(n, false);
+    std::vector<int> conn_stat(n, 0);
+
+    key[start_city] = 0;
+    parent[start_city] = -1;
+
+    for (size_t count = 0; count < n - 1; count++) { // 1. Find MST
+        int u = -1;
+        long double min_key = INF; // Use long double
+        for (size_t v = 0; v < n; v++) {
+            if (!in_mst[v] && key[v] < min_key) {
+                min_key = key[v];
+                u = v;
+            }
+        }
+
+        if (u == -1) {
+            std::cerr << "Error: MST construction failed. Graph is not connected.\n";
+            return EXIT_FAILURE;
+        }
+        in_mst[u] = true;
+
+        for (size_t v = 0; v < n; v++) {
+            long double dist = calc_2d_dist(vertex[target[u]].second, vertex[target[v]].second);
+            if (!in_mst[v] && dist < key[v]) {
+                parent[v] = u;
+                key[v] = dist;
+            }
+        }
+    }
+
+    // long double total_weight = 0; // Use long double
+    // std::cout << "Edge \tWeight\n";
+    // std::cout << std::fixed << std::setprecision(15); // Increase precision
+
+    // long double w = 0;
+    // for(size_t i = 0; i < n; i++){
+    //     w += key[i];
+    // }
+    // std::cout << "Total MST weight in key: " << w << std::endl;
+
+    for(size_t i = 1; i < n; i++){
+        child[parent[i]].emplace_back(i, key[i]);
+    }
+    // printf("1\n");
+
+    for(size_t i = 0; i < n; i++){
+        std::sort(child[i].begin(), child[i].end(), cmp_weight);
+        // for(auto j: child[i]){
+        //     std::cout << i + 1 << " - " << j.first + 1 << "\t" << j.second << std::endl;
+        // }
+    }
+
+    // std::vector<int> result; // 2. Find HC in MST.
+    std::vector<bool> visited (n, false);
+    find_hc(target, child, result, visited, 0);
+}
+
 void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& vertex, int k, int iter,
             std::vector<std::vector<int>>& cluster, std::vector<std::pair<long double, long double>>& centroid, int& one_cont_vertex){
     std::vector<std::pair<long double, long double>> prev_centroid = centroid;
@@ -135,16 +208,28 @@ int main(int argc, char* argv[]) {
     std::vector<std::pair<long double, long double>> centroid(k);
     k_means_init(vertices, k, iter, cluster, centroid, one_cont_vertex);
 
-    
+    std::vector<int> aprx_tour;
+    std::vector<bool> visited(k, false);
+    int idx = 0;
+    visited[one_cont_vertex] = true;
+    // for(size_t i = 0; i < cluster[one_cont_vertex].size(); i++){
+    std::sort(cluster[one_cont_vertex].begin(), cluster[one_cont_vertex].end());
+    mst(cluster[one_cont_vertex], vertices, aprx_tour);
+        // Find opt tour of inside cluster which contains 1.
+    // }
+
+    // Find remainder's opt path.
+
+    // Add connection btw last city and first city.
+    aprx_tour.push_back(0);
 
     long double aprx_weight = 0;
     for(size_t i = 0; i < n - 1; i++){
-        aprx_weight += calc_2d_dist(vertices[mst_hc[i]].second.first, vertices[mst_hc[i]].second.second, vertices[mst_hc[i + 1]].second.first, vertices[mst_hc[i + 1]].second.second);
+        aprx_weight += calc_2d_dist(vertices[aprx_tour[i]].second, vertices[aprx_tour[i + 1]].second);
     }
-    aprx_weight += calc_2d_dist(vertices[n - 1].second.first, vertices[n - 1].second.second, vertices[0].second.first, vertices[0].second.second);
 
-    for(auto i: mst_hc){
-        std::cout << i << "\t";
+    for(auto i: aprx_tour){
+        std::cout << i + 1 << "\t";
     }
 
     std::cout << "\naprx dist: " << aprx_weight << std::endl;

@@ -66,19 +66,6 @@ int main(int argc, char* argv[]){
     auto file_open_end = std::chrono::high_resolution_clock::now();
 
     int n = vertex.size(); // Check total input.
-    // std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
-
-    // Make adj_matrix. Since n>5, n + m = n + (n - 1)! (due to TSP deals with complete graph) > n^2, adj_matrix is better choice than edge list/adj list.
-    // But due to too many usage of mem space, I've changed calculate distance when it needs.
-    // for(size_t i = 0; i < (size_t)n; i++){
-    //     adj_matrix[i][i] = 0;
-
-    //     for(size_t j = i + 1; j < (size_t)n; j++){
-    //         float dist = calc_2d_dist(vertex[i].second, vertex[j].second);
-    //         adj_matrix[i][j] = dist;
-    //         adj_matrix[j][i] = dist;
-    //     }
-    // }
 
     auto adj_matrix_end = std::chrono::high_resolution_clock::now();
 
