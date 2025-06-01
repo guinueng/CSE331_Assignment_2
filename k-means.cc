@@ -214,11 +214,41 @@ int main(int argc, char* argv[]) {
     visited[one_cont_vertex] = true;
     // for(size_t i = 0; i < cluster[one_cont_vertex].size(); i++){
     std::sort(cluster[one_cont_vertex].begin(), cluster[one_cont_vertex].end());
-    mst(cluster[one_cont_vertex], vertices, aprx_tour);
+    mst(cluster[one_cont_vertex], vertices, aprx_tour, 0);
+    int last_city = aprx_tour.back();
         // Find opt tour of inside cluster which contains 1.
     // }
 
     // Find remainder's opt path.
+    for(size_t i = 0; i < k; i++){
+        int min_dist_cluster = 0;
+        long double min_dist = INF;
+        for(size_t j = 0; j < k; j++){  // Find min dist cluster.
+            if(!visited[j]){
+                long double tmp_dist = calc_2d_dist(vertices[last_city].second, centroid[j]);
+                if(tmp_dist < min_dist){
+                    min_dist_cluster = j;
+                    min_dist = tmp_dist;
+                }
+            }
+        }
+
+        // Find closest city.
+        visited[min_dist_cluster] = true;
+        int start_city = cluster[min_dist_cluster].front();
+        int min_intercity_dist = INF;
+        for(size_t j = 0; j < cluster[min_dist_cluster].size(); j++){
+            long double tmp_dist = calc_2d_dist(vertices[last_city].second, vertices[cluster[min_dist_cluster][j]].second);
+        }
+
+        // Find hc of target cluster.
+        std::vector<int> tmp_rst;
+        mst(cluster[min_dist_cluster], vertices, tmp_rst, start_city);
+        
+        // Append result into aprx_tour.
+        aprx_tour.insert(aprx_tour.end(), tmp_rst.begin(), tmp_rst.end());
+        last_city = aprx_tour.back();
+    }
 
     // Add connection btw last city and first city.
     aprx_tour.push_back(0);
