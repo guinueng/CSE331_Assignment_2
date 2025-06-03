@@ -9,10 +9,10 @@ NODE_COORD_SECTION
 
 Path: 
 1	2	3	4	5	6	7	8	9	10	11	12	13	15	14	16	17	18	19	20	21	22	23	24	25	1	
-Dist: 304.109742042312738
+Dist: 437.616296188541829
 Execution time: 0(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./k-means_mod ./dataset/a25.tsp"
+	Command being timed: "./k-means_mod ../dataset/a25.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 100%
@@ -21,10 +21,10 @@ TSP algorithm time: 0(ms)
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3968
+	Maximum resident set size (kbytes): 3944
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 150
+	Minor (reclaiming a frame) page faults: 149
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0

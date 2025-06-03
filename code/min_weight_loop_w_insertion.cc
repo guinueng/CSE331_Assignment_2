@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
     }
 
     long double aprx_weight = 0;
-    for(size_t i = 0; i < n - 2; i++){
+    for(size_t i = 0; i < loop.size() - 1; i++){
         aprx_weight += calc_2d_dist(vertices[loop[i]], vertices[loop[i + 1]]);
     }
 

@@ -5,7 +5,7 @@ DIMENSION: 100
 EDGE_WEIGHT_TYPE : EUC_2D
 NODE_COORD_SECTION
 Command terminated by signal 11
-	Command being timed: "./Held-Karp_algorithm ./dataset/a100.tsp"
+	Command being timed: "./Held-Karp_algorithm ../dataset/a100.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 100%
@@ -14,10 +14,10 @@ Command terminated by signal 11
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3516
+	Maximum resident set size (kbytes): 3548
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 140
+	Minor (reclaiming a frame) page faults: 141
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0

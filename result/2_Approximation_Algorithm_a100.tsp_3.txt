@@ -108,11 +108,12 @@ Total MST weight in key: 925.631651555521133
 99 - 100	12.165525060596439
 
 Path: 
-1	2	3	4	5	6	7	8	9	10	11	12	13	14	24	23	25	22	26	27	28	29	31	30	32	33	34	35	36	37	38	39	40	41	42	43	60	61	62	63	64	65	66	67	70	71	72	73	74	75	76	77	78	68	69	85	84	83	82	81	80	89	90	91	92	93	94	95	96	97	98	99	100	79	88	87	86	59	44	45	46	47	48	49	50	51	52	53	54	55	56	57	58	15	16	17	18	19	20	21	
+1	2	3	4	5	6	7	8	9	10	11	12	13	14	24	23	25	22	26	27	28	29	31	30	32	33	34	35	36	37	38	39	40	41	42	43	60	61	62	63	64	65	66	67	70	71	72	73	74	75	76	77	78	68	69	85	84	83	82	81	80	89	90	91	92	93	94	95	96	97	98	99	100	79	88	87	86	59	44	45	46	47	48	49	50	51	52	53	54	55	56	57	58	15	16	17	18	19	20	21	1
+
 Dist: 1538.827835518461086
 Execution time: 0(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./2_Approximation_Algorithm ./dataset/a100.tsp"
+	Command being timed: "./2_Approximation_Algorithm ../dataset/a100.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 100%
@@ -121,10 +122,10 @@ TSP algorithm time: 0(ms)
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3928
+	Maximum resident set size (kbytes): 3868
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 153
+	Minor (reclaiming a frame) page faults: 152
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0

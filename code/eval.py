@@ -2,12 +2,12 @@ import subprocess
 from pathlib import Path
 
 executables = [
-    # "./2_Approximation_Algorithm",
-    # "./k-means",
-    # "./k-means_mod",
-    # "./min_weight_loop_w_insertion",
+    "./2_Approximation_Algorithm",
+    "./k-means",
+    "./k-means_mod",
+    "./min_weight_loop_w_insertion",
     "./Held-Karp_algorithm",
-    # "./brute_force"
+    "./brute_force"
 ]
 
 datasets = [
@@ -28,7 +28,7 @@ for exe in executables:
         for trial in range(1, num_trials + 1):
             output_file = f"{exe_name}_{dataset}_{trial}.txt"
             # Build the command string
-            cmd = f"/usr/bin/time -v {exe} ./dataset/{dataset}"
+            cmd = f"/usr/bin/time -v {exe} ../dataset/{dataset}"
             print(f"Running: {cmd} -> {output_file}")
             # Run the command, redirecting both stdout and stderr to the output file
             with open(output_file, "w") as f:

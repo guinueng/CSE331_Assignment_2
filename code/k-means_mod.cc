@@ -303,7 +303,7 @@ int main(int argc, char* argv[]) {
     aprx_tour.push_back(0);
 
     long double aprx_weight = 0;
-    for(size_t i = 0; i < n - 1; i++){
+    for(size_t i = 0; i < aprx_tour.size() - 1; i++){
         aprx_weight += calc_2d_dist(vertices[aprx_tour[i]].second, vertices[aprx_tour[i + 1]].second);
     }
 

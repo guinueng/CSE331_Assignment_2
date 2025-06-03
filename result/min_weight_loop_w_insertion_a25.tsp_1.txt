@@ -8,10 +8,10 @@ NODE_COORD_SECTION
 
 Path: 
 0	1	2	3	5	8	9	10	15	23	24	16	21	22	17	18	19	20	12	14	13	11	6	7	4	0	
-Dist: 452.995328836095034
+Dist: 516.443266264491952
 Execution time: 0(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./min_weight_loop_w_insertion ./dataset/a25.tsp"
+	Command being timed: "./min_weight_loop_w_insertion ../dataset/a25.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 100%
@@ -20,10 +20,10 @@ TSP algorithm time: 0(ms)
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3928
+	Maximum resident set size (kbytes): 3836
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 152
+	Minor (reclaiming a frame) page faults: 150
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0

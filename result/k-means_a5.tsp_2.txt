@@ -10,19 +10,19 @@ Path:
 Dist: 0.000000000000000
 Execution time: 0(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./k-means ./dataset/a5.tsp"
+	Command being timed: "./k-means ../dataset/a5.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
-	Percent of CPU this job got: 100%
+	Percent of CPU this job got: 95%
 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3772
+	Maximum resident set size (kbytes): 3736
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 149
+	Minor (reclaiming a frame) page faults: 146
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0

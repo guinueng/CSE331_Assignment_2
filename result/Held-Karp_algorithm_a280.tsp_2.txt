@@ -5,23 +5,23 @@ DIMENSION: 280
 EDGE_WEIGHT_TYPE : EUC_2D
 NODE_COORD_SECTION
 Command terminated by signal 9
-	Command being timed: "./Held-Karp_algorithm ./dataset/a280.tsp"
-	User time (seconds): 0.76
-	System time (seconds): 9.81
-	Percent of CPU this job got: 98%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:10.75
+	Command being timed: "./Held-Karp_algorithm ../dataset/a280.tsp"
+	User time (seconds): 0.84
+	System time (seconds): 16.15
+	Percent of CPU this job got: 96%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:17.70
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 4843292
+	Maximum resident set size (kbytes): 4383352
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 175
-	Minor (reclaiming a frame) page faults: 1202715
-	Voluntary context switches: 195
-	Involuntary context switches: 229
+	Major (requiring I/O) page faults: 316
+	Minor (reclaiming a frame) page faults: 1088798
+	Voluntary context switches: 360
+	Involuntary context switches: 530
 	Swaps: 0
-	File system inputs: 35232
+	File system inputs: 61760
 	File system outputs: 8
 	Socket messages sent: 0
 	Socket messages received: 0

@@ -7,25 +7,25 @@ NODE_COORD_SECTION
 
 Path: 
 1 5 4 3 2 1 
-Dist: 103.5484Execution time: 0(ms)
+Dist: 103.5484Execution time: 2(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./brute_force ./dataset/a5.tsp"
+	Command being timed: "./brute_force ../dataset/a5.tsp"
 	User time (seconds): 0.00
-	System time (seconds): 0.00
-	Percent of CPU this job got: 100%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00
+	System time (seconds): 0.01
+	Percent of CPU this job got: 68%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.01
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3944
+	Maximum resident set size (kbytes): 3904
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 147
-	Voluntary context switches: 1
+	Major (requiring I/O) page faults: 5
+	Minor (reclaiming a frame) page faults: 143
+	Voluntary context switches: 8
 	Involuntary context switches: 0
 	Swaps: 0
-	File system inputs: 0
+	File system inputs: 1432
 	File system outputs: 8
 	Socket messages sent: 0
 	Socket messages received: 0

@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
     find_hc(child, mst_hc, visited, 0);
 
     long double aprx_weight = 0;
-    for(size_t i = 0; i < n - 1; i++){
+    for(size_t i = 0; i < mst_hc.size() - 1; i++){
         aprx_weight += calc_2d_dist(vertices[mst_hc[i]].second.first, vertices[mst_hc[i]].second.second, vertices[mst_hc[i + 1]].second.first, vertices[mst_hc[i + 1]].second.second);
     }
     aprx_weight += calc_2d_dist(vertices[n - 1].second.first, vertices[n - 1].second.second, vertices[0].second.first, vertices[0].second.second);
@@ -148,6 +148,7 @@ int main(int argc, char* argv[]) {
     for(auto i: mst_hc){
         std::cout << i + 1 << "\t";
     }
+    std::cout << "1" << "\n";
 
     std::cout << "\nDist: " << aprx_weight << std::endl;
 

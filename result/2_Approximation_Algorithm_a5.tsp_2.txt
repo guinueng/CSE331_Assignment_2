@@ -13,11 +13,12 @@ Total MST weight in key: 70.563604411182874
 4 - 5	16.000000000000000
 
 Path: 
-1	2	3	4	5	
+1	2	3	4	5	1
+
 Dist: 103.548449416124158
 Execution time: 0(ms)
 TSP algorithm time: 0(ms)
-	Command being timed: "./2_Approximation_Algorithm ./dataset/a5.tsp"
+	Command being timed: "./2_Approximation_Algorithm ../dataset/a5.tsp"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 100%
@@ -26,10 +27,10 @@ TSP algorithm time: 0(ms)
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 3936
+	Maximum resident set size (kbytes): 3852
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 149
+	Minor (reclaiming a frame) page faults: 148
 	Voluntary context switches: 1
 	Involuntary context switches: 0
 	Swaps: 0
