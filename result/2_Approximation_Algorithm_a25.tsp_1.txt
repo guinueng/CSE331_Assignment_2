@@ -1,0 +1,62 @@
+NAME : a25
+COMMENT : drilling problem (Ludwig)
+TYPE : TSP
+DIMENSION: 25
+EDGE_WEIGHT_TYPE : EUC_2D
+NODE_COORD_SECTION
+Edge 	Weight
+Total MST weight in key: 266.072647582994500
+1
+1 - 2	20.000000000000000
+2 - 3	18.439088914585775
+3 - 4	16.124515496597099
+4 - 5	16.000000000000000
+5 - 6	10.000000000000000
+6 - 7	15.620499351813309
+7 - 8	8.000000000000000
+8 - 9	8.000000000000000
+8 - 10	8.000000000000000
+10 - 11	8.000000000000000
+11 - 12	8.000000000000000
+12 - 13	8.000000000000000
+13 - 14	8.000000000000000
+13 - 15	8.000000000000000
+14 - 24	16.000000000000000
+15 - 16	17.888543819998318
+16 - 17	16.000000000000000
+17 - 18	8.000000000000000
+18 - 19	8.000000000000000
+19 - 20	8.000000000000000
+20 - 21	8.000000000000000
+23 - 25	8.000000000000000
+24 - 23	8.000000000000000
+25 - 22	8.000000000000000
+
+Path: 
+1	2	3	4	5	6	7	8	9	10	11	12	13	14	24	23	25	22	15	16	17	18	19	20	21	
+Dist: 443.555010470594109
+Execution time: 0(ms)
+TSP algorithm time: 0(ms)
+	Command being timed: "./2_Approximation_Algorithm ./dataset/a25.tsp"
+	User time (seconds): 0.00
+	System time (seconds): 0.00
+	Percent of CPU this job got: 100%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3912
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 151
+	Voluntary context switches: 2
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 8
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

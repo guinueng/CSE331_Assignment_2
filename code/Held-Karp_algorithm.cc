@@ -156,7 +156,7 @@ int main(int argc, char* argv[]){
         std::cout << *i << "\t";
     }
 
-    std::cout << "Dist: " << min_dist << "\n\n";
+    std::cout << "\nDist: " << min_dist << "\n";
 
     auto end = std::chrono::high_resolution_clock::now();
 

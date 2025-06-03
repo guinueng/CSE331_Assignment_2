@@ -307,12 +307,13 @@ int main(int argc, char* argv[]) {
         aprx_weight += calc_2d_dist(vertices[aprx_tour[i]].second, vertices[aprx_tour[i + 1]].second);
     }
 
+    printf("\nPath: \n");
     for(auto i: aprx_tour){
         std::cout << i + 1 << "\t";
     }
 
     std::cout << std::fixed << std::setprecision(15); // Increase precision
-    std::cout << "\naprx dist: " << aprx_weight << std::endl;
+    std::cout << "\nDist: " << aprx_weight << std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

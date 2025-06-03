@@ -136,7 +136,7 @@ void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& v
                 x_sum += vertex[tmp_idx].second.first;
                 y_sum += vertex[tmp_idx].second.second;
                 if(tmp_idx == 0){
-                    one_cont_vertex = tmp_idx;
+                    one_cont_vertex = j;
                 }
             }
 
