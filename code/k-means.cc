@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -135,7 +136,7 @@ void k_means(std::vector<std::pair<int, std::pair<long double, long double>>>& v
                 x_sum += vertex[tmp_idx].second.first;
                 y_sum += vertex[tmp_idx].second.second;
                 if(tmp_idx == 0){
-                    one_cont_vertex = tmp_idx;
+                    one_cont_vertex = j;
                 }
             }
 
@@ -170,6 +171,7 @@ void k_means_init(std::vector<std::pair<int, std::pair<long double, long double>
 }
 
 int main(int argc, char* argv[]) {
+    auto start = std::chrono::high_resolution_clock::now();
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
@@ -210,6 +212,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "No vertices found in the file.\n";
         return EXIT_FAILURE;
     }
+
+    auto file_open_end = std::chrono::high_resolution_clock::now();
 
     size_t k = 10;
     size_t iter = 100;
@@ -292,12 +296,19 @@ int main(int argc, char* argv[]) {
         aprx_weight += calc_2d_dist(vertices[aprx_tour[i]].second, vertices[aprx_tour[i + 1]].second);
     }
 
+    printf("\nPath: \n");
     for(auto i: aprx_tour){
         std::cout << i + 1 << "\t";
     }
 
     std::cout << std::fixed << std::setprecision(15); // Increase precision
-    std::cout << "\naprx dist: " << aprx_weight << std::endl;
+    std::cout << "\nDist: " << aprx_weight << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - file_open_end).count();
+    std::cout << "Execution time: " << duration << "(ms)\n";
+    std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     return 0;
 }

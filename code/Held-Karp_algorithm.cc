@@ -147,13 +147,16 @@ int main(int argc, char* argv[]){
 
     tour.push_back(1); // Start city.
 
-    std::cout << "min dist: " << min_dist << "\n\n";
+    
 
+    printf("\nPath: \n");
     for(auto i = tour.rbegin(); i != tour.rend(); i++){
         // Since tour is stored as backtrace way, need to print reverse way.
         // Save city sequence in each line.
-        std::cout << *i << "\n";
+        std::cout << *i << "\t";
     }
+
+    std::cout << "Dist: " << min_dist << "\n\n";
 
     auto end = std::chrono::high_resolution_clock::now();
 

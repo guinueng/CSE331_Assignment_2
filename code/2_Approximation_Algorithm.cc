@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -33,6 +34,7 @@ void find_hc(std::vector<std::vector<std::pair<int, long double>>>& child, std::
 }
 
 int main(int argc, char* argv[]) {
+    auto start = std::chrono::high_resolution_clock::now();
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
@@ -74,6 +76,8 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
+    auto file_open_end = std::chrono::high_resolution_clock::now();
+    
     std::vector<int> parent(n);
     std::vector<std::vector<std::pair<int, long double>>> child(n);
     std::vector<long double> key(n, INF); // Use long double
@@ -140,11 +144,18 @@ int main(int argc, char* argv[]) {
     }
     aprx_weight += calc_2d_dist(vertices[n - 1].second.first, vertices[n - 1].second.second, vertices[0].second.first, vertices[0].second.second);
 
+    printf("\nPath: \n");
     for(auto i: mst_hc){
-        std::cout << i << "\t";
+        std::cout << i + 1 << "\t";
     }
 
-    std::cout << "\naprx dist: " << aprx_weight << std::endl;
+    std::cout << "\nDist: " << aprx_weight << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - file_open_end).count();
+    std::cout << "Execution time: " << duration << "(ms)\n";
+    std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     return 0;
 }

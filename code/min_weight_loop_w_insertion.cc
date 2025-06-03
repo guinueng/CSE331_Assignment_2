@@ -7,6 +7,7 @@
 #include <cfloat>
 #include <iomanip>
 #include <algorithm>
+#include <chrono>
 #include <limits> // Required for numeric_limits
 
 #define INF DBL_MAX
@@ -23,6 +24,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "Usage: " << argv[0] << " <dataset>\n";
         return EXIT_FAILURE;
     }
+
+    auto start = std::chrono::high_resolution_clock::now();
 
     std::ifstream file(argv[1]);
     if (!file.is_open()) {
@@ -59,6 +62,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "No vertices found in the file.\n";
         return EXIT_FAILURE;
     }
+
+    auto file_open_end = std::chrono::high_resolution_clock::now();
 
     std::vector<int> loop;  // 1. Find loop of city which goes to 1 or make loops.
     std::vector<bool> visited (n, false);
@@ -119,12 +124,19 @@ int main(int argc, char* argv[]) {
         aprx_weight += calc_2d_dist(vertices[loop[i]], vertices[loop[i + 1]]);
     }
 
+    printf("\nPath: \n");
     for(auto i: loop){
         std::cout << i << "\t";
     }
 
     std::cout << std::fixed << std::setprecision(15); // Increase precision
-    std::cout << "\naprx dist: " << aprx_weight << std::endl;
+    std::cout << "\nDist: " << aprx_weight << std::endl;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - file_open_end).count();
+    std::cout << "Execution time: " << duration << "(ms)\n";
+    std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     return 0;
 }

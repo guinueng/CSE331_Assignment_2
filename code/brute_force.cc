@@ -3,6 +3,7 @@
 #include <cstdlib> // for EXIT_FAILURE
 #include <vector>
 #include <sstream>
+#include <chrono>
 #include <cmath>
 
 void print(const auto comment, const auto& container)
@@ -82,6 +83,8 @@ int main(int argc, char* argv[]){
         return EXIT_FAILURE;
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     std::ifstream file(argv[1], std::ios::in);
     if(!file.is_open()){
         std::cerr<< "Unable to open file.\n" << std::endl;
@@ -113,10 +116,10 @@ int main(int argc, char* argv[]){
         vertex_list.emplace_back(city);
     }
 
-    for(const auto &i: vertex){ // Print vertex info.
-        std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
-    }
-    std::cout << "\n";
+    // for(const auto &i: vertex){ // Print vertex info.
+    //     std::cout << i.first << "th city with loc: " << i.second.first << ", " << i.second.second << std::endl;
+    // }
+    // std::cout << "\n";
 
     // int n = vertex.size(); // Check total input.
     // std::vector<std::vector<float>> adj_matrix(n, std::vector<float>(n, 0.0000f));
@@ -138,6 +141,8 @@ int main(int argc, char* argv[]){
     //     }
     //     std::cout << "\n";
     // }
+
+    auto file_open_end = std::chrono::high_resolution_clock::now();
 
     float min_dist, tmp_dist;
     std::vector<int> tour;
@@ -176,13 +181,19 @@ int main(int argc, char* argv[]){
     tour.push_back(min_vertex);
     tour.push_back(1);
 
-    printf("min dist: %.4f", min_dist);
-
-    std::cout << "\n";
+    std::cout << "\nPath: \n";
     for(auto i : tour){
         std::cout << i << " ";
     }
     std::cout << "\n";
+
+    printf("Dist: %.4f", min_dist);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto TSP_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - file_open_end).count();
+    std::cout << "Execution time: " << duration << "(ms)\n";
+    std::cout << "TSP algorithm time: " << TSP_duration << "(ms)\n";
 
     return 0;
 }
