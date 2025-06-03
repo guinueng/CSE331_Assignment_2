@@ -1,0 +1,32 @@
+NAME : a280
+COMMENT : drilling problem (Ludwig)
+TYPE : TSP
+DIMENSION: 280
+EDGE_WEIGHT_TYPE : EUC_2D
+NODE_COORD_SECTION
+2
+0	278	259	277	276	275	274	273	272	270	271	269	261	262	267	268	263	266	265	264	260	241	247	255	257	258	256	249	251	254	253	252	250	248	246	244	245	243	242	238	240	239	202	212	226	232	237	236	235	234	233	230	231	227	229	228	223	224	225	216	221	222	219	220	218	217	215	214	213	204	206	211	210	209	208	207	205	203	4	6	9	14	131	152	155	177	180	181	182	183	184	192	197	201	200	199	198	196	195	193	194	186	190	191	189	188	187	185	178	179	175	176	156	157	158	159	174	160	161	172	173	168	170	171	169	162	165	166	167	164	163	153	154	133	134	136	148	149	150	151	139	147	146	140	141	142	143	145	144	137	138	135	132	22	24	25	127	129	130	128	125	126	118	119	120	121	122	123	124	27	31	32	33	34	35	37	53	58	66	68	67	62	64	114	117	116	115	65	86	113	112	111	110	109	108	107	106	88	102	104	105	103	92	98	100	101	99	97	96	95	93	94	89	90	91	87	85	84	83	82	75	81	80	79	78	77	76	72	74	73	71	70	69	63	61	59	60	54	55	56	57	51	52	49	50	48	47	46	45	43	44	39	40	41	42	38	36	28	30	29	26	23	16	17	18	21	20	19	15	10	12	13	11	8	7	5	3	2	279	1	0	
+aprx dist: 4938.052768980644192
+	Command being timed: "./min_weight_loop_w_insertion ./dataset/a280.tsp"
+	User time (seconds): 0.00
+	System time (seconds): 0.00
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3880
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 155
+	Voluntary context switches: 1
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

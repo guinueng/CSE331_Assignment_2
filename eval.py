@@ -2,11 +2,11 @@ import subprocess
 from pathlib import Path
 
 executables = [
-    "./2_Approximation_Algorithm",
-    "./Held-Karp_algorithm",
-    "./k-means",
-    "./min_weight_loop_w_insertion",
-    "./brute-force"
+    # "./2_Approximation_Algorithm",
+    # "./k-means",
+    # "./min_weight_loop_w_insertion",
+    # "./Held-Karp_algorithm",
+    "./brute_force"
 ]
 
 datasets = [
